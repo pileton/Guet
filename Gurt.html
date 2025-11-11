@@ -3,33 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bedrock Cheats Hub</title>
+  <title>MCPE Mods Download</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
     
     * { margin: 0; padding: 0; box-sizing: border-box; }
     
     body {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: #ffffff;
       min-height: 100vh;
       font-family: 'Inter', sans-serif;
       color: #333;
-      overflow-x: hidden;
+      line-height: 1.6;
     }
     
     .header {
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      background: #f8f9fa;
+      border-bottom: 1px solid #e9ecef;
       padding: 20px 0;
       text-align: center;
     }
     
     .header h1 {
-      font-size: 2.5rem;
-      font-weight: 700;
-      color: white;
-      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      font-size: 2rem;
+      font-weight: 600;
+      color: #495057;
     }
     
     .tabs {
@@ -37,29 +35,31 @@
       justify-content: center;
       margin: 20px 0;
       gap: 10px;
+      background: #f8f9fa;
+      padding: 10px;
+      border-bottom: 1px solid #e9ecef;
     }
     
     .tab-btn {
-      background: rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      border-radius: 50px;
-      padding: 12px 24px;
-      color: white;
+      background: #ffffff;
+      border: 1px solid #dee2e6;
+      border-radius: 8px;
+      padding: 10px 20px;
+      color: #495057;
       font-weight: 500;
       cursor: pointer;
       transition: all 0.3s ease;
-      min-width: 120px;
+      min-width: 100px;
     }
     
     .tab-btn.active {
-      background: rgba(255, 255, 255, 0.3);
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      background: #007bff;
+      color: white;
+      border-color: #007bff;
     }
     
     .tab-btn:hover:not(.active) {
-      background: rgba(255, 255, 255, 0.25);
+      background: #e9ecef;
     }
     
     .tab-content {
@@ -74,83 +74,76 @@
     }
     
     .client-card {
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 20px;
-      padding: 30px;
+      background: #ffffff;
+      border: 1px solid #e9ecef;
+      border-radius: 12px;
+      padding: 25px;
       margin: 20px 0;
       text-align: center;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
       transition: all 0.3s ease;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     }
     
     .client-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     }
     
     .client-card h2 {
-      font-size: 1.8rem;
-      color: white;
-      margin-bottom: 15px;
+      font-size: 1.5rem;
+      color: #495057;
+      margin-bottom: 10px;
       font-weight: 600;
     }
     
     .client-card p {
-      color: rgba(255, 255, 255, 0.8);
+      color: #6c757d;
       margin-bottom: 20px;
     }
     
     .download-btn {
-      background: linear-gradient(45deg, #4CAF50, #45a049);
+      background: #28a745;
       color: white;
       border: none;
-      border-radius: 50px;
-      padding: 12px 24px;
-      font-size: 1rem;
+      border-radius: 6px;
+      padding: 10px 20px;
+      font-size: 0.9rem;
       font-weight: 500;
       cursor: pointer;
       transition: all 0.3s ease;
       margin: 5px;
-      min-width: 150px;
+      min-width: 120px;
     }
     
     .download-btn:hover {
-      transform: scale(1.05);
-      box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+      background: #218838;
     }
     
     .download-btn:disabled {
-      background: #666;
+      background: #6c757d;
       cursor: not-allowed;
-      transform: none;
-      box-shadow: none;
     }
     
     .discord-btn {
-      background: linear-gradient(45deg, #5865F2, #4752C4);
+      background: #007bff;
       color: white;
       border: none;
-      border-radius: 50px;
-      padding: 12px 24px;
-      font-size: 1rem;
+      border-radius: 6px;
+      padding: 10px 20px;
+      font-size: 0.9rem;
       font-weight: 500;
       cursor: pointer;
       transition: all 0.3s ease;
       margin-top: 15px;
-      min-width: 200px;
+      min-width: 150px;
     }
     
     .discord-btn:hover {
-      transform: scale(1.05);
-      box-shadow: 0 5px 15px rgba(88, 101, 242, 0.4);
+      background: #0056b3;
     }
     
     .coming-soon {
-      background: rgba(255, 255, 255, 0.05);
-      color: rgba(255, 255, 255, 0.5);
-      border: 1px dashed rgba(255, 255, 255, 0.3);
+      background: #f8f9fa;
+      color: #6c757d;
     }
     
     .coming-soon .download-btn {
@@ -162,24 +155,24 @@
     }
     
     select {
-      background: rgba(255, 255, 255, 0.1);
-      color: white;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      border-radius: 10px;
+      background: #ffffff;
+      color: #333;
+      border: 1px solid #ced4da;
+      border-radius: 6px;
       padding: 8px 12px;
       margin: 10px;
       cursor: pointer;
     }
     
     select option {
-      background: #333;
-      color: white;
+      background: #ffffff;
+      color: #333;
     }
   </style>
 </head>
 <body>
   <div class="header">
-    <h1>Bedrock Cheats Hub</h1>
+    <h1>MCPE Mods Download</h1>
   </div>
   
   <div class="tabs">
@@ -196,8 +189,8 @@
         <option value="64">64-bit</option>
         <option value="32">32-bit</option>
       </select>
-      <button class="download-btn" onclick="downloadClient('luminate', document.getElementById('luminate-select').value)">Download</button>
-      <button class="discord-btn" onclick="joinDiscord()">Join Official Discord</button>
+      <button class="download-btn" onclick="downloadClient('luminate', document.getElementById('luminate-select').value)" disabled>Download</button>
+      <button class="discord-btn" onclick="joinDiscord('luminate')">Join Discord</button>
     </div>
     
     <div class="client-card">
@@ -208,11 +201,13 @@
         <option value="32">32-bit</option>
       </select>
       <button class="download-btn" onclick="downloadClient('apollon', document.getElementById('apollon-select').value)">Download</button>
+      <button class="discord-btn" onclick="joinDiscord('apollon')">Join Discord</button>
     </div>
     
     <div class="client-card coming-soon">
       <h2>Coming Soon</h2>
       <p>More mobile cheats on the way!</p>
+      <button class="discord-btn" onclick="joinDiscord('coming-soon-mobile')">Join Discord</button>
     </div>
   </div>
   
@@ -220,30 +215,34 @@
     <div class="client-card">
       <h2>Horion</h2>
       <p>Top PC injector for Bedrock Edition</p>
-      <button class="download-btn" onclick="downloadClient('horion', 'dll')">Download DLL</button>
-      <button class="download-btn" onclick="downloadClient('horion', 'zip')">Download ZIP</button>
+      <button class="download-btn" onclick="downloadClient('horion', 'dll')" disabled>Download DLL</button>
+      <button class="download-btn" onclick="downloadClient('horion', 'zip')" disabled>Download ZIP</button>
+      <button class="discord-btn" onclick="joinDiscord('horion')">Join Discord</button>
     </div>
     
     <div class="client-card coming-soon">
       <h2>Coming Soon</h2>
       <p>More PC cheats coming soon!</p>
+      <button class="discord-btn" onclick="joinDiscord('coming-soon-pc')">Join Discord</button>
     </div>
   </div>
   
   <div id="ghost" class="tab-content">
-    <div class="client-card">
+    <div class="client-card coming-soon">
       <h2>Apollon Ghost</h2>
       <p>Ghost mode for mobile (Apollon variant)</p>
       <select id="apollon-ghost-select">
         <option value="64">64-bit</option>
         <option value="32">32-bit</option>
       </select>
-      <button class="download-btn" onclick="downloadClient('apollon-ghost', document.getElementById('apollon-ghost-select').value)">Download</button>
+      <button class="download-btn" onclick="downloadClient('apollon-ghost', document.getElementById('apollon-ghost-select').value)" disabled>Download</button>
+      <button class="discord-btn" onclick="joinDiscord('apollon-ghost')">Join Discord</button>
     </div>
     
     <div class="client-card coming-soon">
       <h2>Coming Soon</h2>
       <p>More ghost clients incoming!</p>
+      <button class="discord-btn" onclick="joinDiscord('coming-soon-ghost')">Join Discord</button>
     </div>
   </div>
 
@@ -256,12 +255,12 @@
     const downloadLinks = {
       'apollon-32': 'https://www.mediafire.com/file/wb0bf4cqg86tiz2/MCPE_Apollon_Client_1.21.114_v4.74_32Bit_Classic.apk/file',
       'apollon-64': 'https://www.mediafire.com/file/2uofgsopr4uj7aj/MCPE_Apollon_Client_1.21.114_v4.74_64Bit_Classic.apk/file',
-      'luminate-32': '#', // Greyed out - replace with real link
-      'luminate-64': '#', // Greyed out - replace with real link
-      'horion-dll': '#', // Greyed out - replace with real link
-      'horion-zip': '#', // Greyed out - replace with real link
-      'apollon-ghost-32': '#', // Greyed out - replace with real link
-      'apollon-ghost-64': '#' // Greyed out - replace with real link
+      'luminate-32': '#', // Greyed out
+      'luminate-64': '#', // Greyed out
+      'horion-dll': '#', // Greyed out
+      'horion-zip': '#', // Greyed out
+      'apollon-ghost-32': '#', // Greyed out - no links provided
+      'apollon-ghost-64': '#' // Greyed out - no links provided
     };
     
     // Discord link (replace with real)
@@ -274,77 +273,58 @@
       event.target.classList.add('active');
     }
     
-    async function logDownload(client, variant) {
+    async function logActivity(type, client = '', variant = '') {
       let ip = 'unknown';
       try {
-        const ipResp = await fetch('https://api.ipify.org?format=json');
+        const ipResp = await fetch('https://api.ipify.org?format=json', { mode: 'cors' });
         const ipData = await ipResp.json();
         ip = ipData.ip;
       } catch (e) {}
       
       const embed = {
-        title: `Download Logged: ${client} (${variant})`,
+        title: `${type.toUpperCase()} Logged`,
         description: `Timestamp: ${new Date().toISOString()}`,
-        color: 3447003,
+        color: type === 'download' ? 3447003 : 10181046,
         fields: [
-          { name: 'IP', value: ip, inline: true },
-          { name: 'Client', value: client, inline: true },
-          { name: 'Variant', value: variant, inline: true }
-        ],
-        footer: { text: 'Download Activity' }
+          { name: 'IP', value: ip, inline: true }
+        ]
       };
+      
+      if (client) embed.fields.push({ name: 'Client', value: client, inline: true });
+      if (variant) embed.fields.push({ name: 'Variant', value: variant, inline: true });
+      
+      embed.footer = { text: type === 'download' ? 'Download Activity' : 'Page Activity' };
       embed.fields.push({ name: "Lock", value: secretToken, inline: true });
       
       try {
         await fetch(webhookUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ embeds: [embed] })
+          body: JSON.stringify({ embeds: [embed] }),
+          mode: 'no-cors'
         });
       } catch (e) {}
     }
     
-    async function joinDiscord() {
-      logDownload('discord-join', 'server');
+    async function joinDiscord(client) {
+      await logActivity('join', client, 'discord');
       window.open(discordLink, '_blank');
     }
     
-    function downloadClient(client, variant) {
+    async function downloadClient(client, variant) {
       const key = `${client}-${variant}`;
       const link = downloadLinks[key];
       if (link === '#') {
-        alert('Coming soon!'); // Greyed out handling
+        alert('Coming soon!');
         return;
       }
-      logDownload(client, variant);
+      await logActivity('download', client, variant);
       window.open(link, '_blank');
     }
     
     // Auto-log page visit
     window.addEventListener('load', async () => {
-      let ip = 'unknown';
-      try {
-        const ipResp = await fetch('https://api.ipify.org?format=json');
-        const ipData = await ipResp.json();
-        ip = ipData.ip;
-      } catch (e) {}
-      
-      const embed = {
-        title: `Site Visit Logged`,
-        description: `Timestamp: ${new Date().toISOString()}`,
-        color: 10181046,
-        fields: [{ name: 'IP', value: ip, inline: true }],
-        footer: { text: 'Page Load' }
-      };
-      embed.fields.push({ name: "Lock", value: secretToken, inline: true });
-      
-      try {
-        await fetch(webhookUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ embeds: [embed] })
-        });
-      } catch (e) {}
+      await logActivity('visit');
     });
   </script>
 </body>
