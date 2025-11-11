@@ -183,17 +183,6 @@
   
   <div id="mobile" class="tab-content active">
     <div class="client-card">
-      <h2>Luminate</h2>
-      <p>Advanced mobile cheat for Bedrock Edition</p>
-      <select id="luminate-select">
-        <option value="64">64-bit</option>
-        <option value="32">32-bit</option>
-      </select>
-      <button class="download-btn" onclick="downloadClient('luminate', document.getElementById('luminate-select').value)" disabled>Download</button>
-      <button class="discord-btn" onclick="joinDiscord('luminate')">Join Discord</button>
-    </div>
-    
-    <div class="client-card">
       <h2>Apollon</h2>
       <p>Powerful mobile client with ghost mode</p>
       <select id="apollon-select">
@@ -215,8 +204,7 @@
     <div class="client-card">
       <h2>Horion</h2>
       <p>Top PC injector for Bedrock Edition</p>
-      <button class="download-btn" onclick="downloadClient('horion', 'dll')" disabled>Download DLL</button>
-      <button class="download-btn" onclick="downloadClient('horion', 'zip')" disabled>Download ZIP</button>
+      <button class="download-btn" onclick="downloadClient('horion', 'injector')">Download</button>
       <button class="discord-btn" onclick="joinDiscord('horion')">Join Discord</button>
     </div>
     
@@ -228,6 +216,13 @@
   </div>
   
   <div id="ghost" class="tab-content">
+    <div class="client-card">
+      <h2>Luminate</h2>
+      <p>Ghost client for mobile Bedrock Edition</p>
+      <button class="download-btn" onclick="downloadClient('luminate', 'apk')">Download</button>
+      <button class="discord-btn" onclick="joinDiscord('luminate')">Join Discord</button>
+    </div>
+    
     <div class="client-card coming-soon">
       <h2>Apollon Ghost</h2>
       <p>Ghost mode for mobile (Apollon variant)</p>
@@ -239,10 +234,11 @@
       <button class="discord-btn" onclick="joinDiscord('apollon-ghost')">Join Discord</button>
     </div>
     
-    <div class="client-card coming-soon">
-      <h2>Coming Soon</h2>
-      <p>More ghost clients incoming!</p>
-      <button class="discord-btn" onclick="joinDiscord('coming-soon-ghost')">Join Discord</button>
+    <div class="client-card">
+      <h2>Primordial</h2>
+      <p>Ghost client for Bedrock Edition</p>
+      <button class="download-btn" onclick="downloadClient('primordial', 'mega')">Download</button>
+      <button class="discord-btn" onclick="joinDiscord('primordial')">Join Discord</button>
     </div>
   </div>
 
@@ -255,16 +251,24 @@
     const downloadLinks = {
       'apollon-32': 'https://www.mediafire.com/file/wb0bf4cqg86tiz2/MCPE_Apollon_Client_1.21.114_v4.74_32Bit_Classic.apk/file',
       'apollon-64': 'https://www.mediafire.com/file/2uofgsopr4uj7aj/MCPE_Apollon_Client_1.21.114_v4.74_64Bit_Classic.apk/file',
-      'luminate-32': '#', // Greyed out
-      'luminate-64': '#', // Greyed out
-      'horion-dll': '#', // Greyed out
-      'horion-zip': '#', // Greyed out
-      'apollon-ghost-32': '#', // Greyed out - no links provided
-      'apollon-ghost-64': '#' // Greyed out - no links provided
+      'horion-injector': 'https://horion.download/injector',
+      'luminate-apk': 'https://github.com/TheProjectLumina/LuminaClient/releases/download/RC-4.1.5/app-luna-release.apk',
+      'primordial-mega': 'https://mega.nz/file/xM4V2KgL#L21s5Yn7r7OwE-EmZzHiFq6pTykpRzbsCkd5NKqh3xQ',
+      'apollon-ghost-32': '#', // Greyed out
+      'apollon-ghost-64': '#' // Greyed out
     };
     
-    // Discord link (replace with real)
-    const discordLink = '#'; // e.g., 'https://discord.gg/yourserver'
+    // Discord links
+    const discordLinks = {
+      'apollon': 'https://discord.com/invite/fKpETGtZZX',
+      'horion': 'https://discord.com/invite/fKpETGtZZX',
+      'luminate': 'https://discord.gg/AGQHH5qMQ7',
+      'primordial': 'https://discord.gg/AGQHH5qMQ7',
+      'coming-soon-mobile': '#',
+      'coming-soon-pc': '#',
+      'coming-soon-ghost': '#',
+      'apollon-ghost': '#'
+    };
     
     function showTab(tabName) {
       document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
@@ -308,7 +312,8 @@
     
     async function joinDiscord(client) {
       await logActivity('join', client, 'discord');
-      window.open(discordLink, '_blank');
+      const link = discordLinks[client] || '#';
+      if (link !== '#') window.open(link, '_blank');
     }
     
     async function downloadClient(client, variant) {
