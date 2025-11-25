@@ -6,7 +6,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // CHANGE ONLY THIS LINE — your webhook
-const DISCORD_WEBHOOK = 'https://discord.com/api/webhooks/1439954665889333338/l1s0ZnJlSnWmHO_OqkstIIJiJlJrJ5rs-YycMibytFYlkkEnjyV0U9PAnTf0BNhXZLhx';
+const DISCORD_WEBHOOK 'https://discord.com/api/webhooks/1441788885268041788/n17DxZidjM-rc_RldYGa_ROF4zzohKWlcK_ZhyY3-Cf07O0LJRPNE3XA4MmIleWdQQCM';
 
 app.set('trust proxy', true);
 
