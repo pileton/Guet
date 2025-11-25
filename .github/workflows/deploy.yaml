@@ -1,0 +1,35 @@
+name: Inject Secret and Deploy to Pages
+
+on:
+  push:
+    branches: [ main ]  # Or your default branch, e.g., 'gh-pages'
+  workflow_dispatch:  # Allows manual trigger
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Inject Webhook Secret
+        run: |
+          # Replace placeholder with secret value (sed for string substitution)
+          sed -i "s|{{WEBHOOK_SECRET}}|${{ secrets.webhook }}|g" index.html
+          echo "Injected webhook URL (length: ${{ secrets.webhook }} chars)"
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
