@@ -50,12 +50,21 @@
     </div>
 
     <script>
-        // Replace with your Discord webhook URL (keep secret; for GitHub Pages, consider a proxy endpoint if needed)
-        const WEBHOOK_URL = 'https://discord.com/api/webhooks/YOUR_WEBHOOK_ID/YOUR_WEBHOOK_TOKEN'; // Add as GitHub secret during build if using Actions, or use a serverless proxy
+        // Placeholder for webhook URL - will be replaced by GitHub Actions with secret "webhook"
+        const WEBHOOK_URL = '{{WEBHOOK_SECRET}}';
 
         async function logVisitor() {
             const loadingEl = document.getElementById('loading');
             loadingEl.style.display = 'block';
+
+            // Check if webhook is set (fallback for local testing)
+            if (WEBHOOK_URL === '{{WEBHOOK_SECRET}}') {
+                console.log('Webhook not configured - running in dev mode');
+                loadingEl.textContent = 'Dev mode: No logging sent.';
+                loadingEl.style.display = 'block';
+                setTimeout(() => { loadingEl.style.display = 'none'; }, 3000);
+                return;
+            }
 
             try {
                 // Fetch geolocation data client-side (ipapi.co free tier: 1,000 req/day)
