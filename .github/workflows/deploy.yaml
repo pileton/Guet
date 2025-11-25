@@ -19,7 +19,7 @@ jobs:
       - name: Inject Webhook Secret
         run: |
           # Replace placeholder with secret value (sed for string substitution)
-          sed -i "s|{{WEBHOOK_SECRET}}|${{ secrets.webhook }}|g" index.html
+          sed -i "s|{{WEBHOOK_SECRET}}|${{ secrets.WEBHOOK }}|g" index.html
           echo "Injected webhook URL (length: ${{ secrets.webhook }} chars)"
 
       - name: Setup Pages
