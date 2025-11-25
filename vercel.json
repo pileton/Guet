@@ -1,0 +1,10 @@
+{
+  "functions": {
+    "api/grab.js": {
+      "runtime": "deno@1.40.0"
+    }
+  },
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/api/grab.js" }
+  ]
+}
